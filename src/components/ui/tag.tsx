@@ -1,0 +1,46 @@
+import { StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+
+import { AppText } from '@/components/ui/app-text';
+import { Icon, type AppIconName } from '@/components/ui/icon';
+import { color, radius, spacing } from '@/theme';
+
+export type TagTone = 'neutral' | 'lavender' | 'mint' | 'blush' | 'sky';
+
+export type TagProps = {
+  label: string;
+  tone?: TagTone;
+  icon?: AppIconName;
+  style?: StyleProp<ViewStyle>;
+};
+
+const toneSurface: Record<TagTone, string> = {
+  neutral: color.surfaceGray,
+  lavender: color.badgeLavender,
+  mint: color.badgeMint,
+  blush: color.badgeBlush,
+  sky: color.badgeSky,
+};
+
+export function Tag({ label, tone = 'neutral', icon, style }: TagProps) {
+  const ink = tone === 'neutral' ? color.textSecondary : color.darkInk;
+
+  return (
+    <View style={[styles.tag, { backgroundColor: toneSurface[tone] }, style]}>
+      {icon ? <Icon name={icon} size="sm" color={ink} /> : null}
+      <AppText variant="label" style={{ color: ink }}>
+        {label}
+      </AppText>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  tag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing[1],
+    paddingHorizontal: spacing[3],
+    paddingVertical: spacing[1],
+    borderRadius: radius.pill,
+  },
+});

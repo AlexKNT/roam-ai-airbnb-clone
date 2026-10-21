@@ -1,21 +1,16 @@
 import { useAuth, useSignIn, useSignUp } from '@clerk/expo';
 import { type Href, Redirect, router } from 'expo-router';
 import { useState } from 'react';
-import {
-  ActivityIndicator,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  StyleSheet,
-  TextInput,
-  View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { KeyboardAvoidingView, Platform, Pressable, StyleSheet, View } from 'react-native';
 
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { MaxContentWidth, Spacing } from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
+import { Alert } from '@/components/ui/alert';
+import { AppText } from '@/components/ui/app-text';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Logo } from '@/components/ui/logo';
+import { Screen } from '@/components/ui/screen';
+import { signInCopy } from '@/constants/copy';
+import { color, layout, radius, spacing } from '@/theme';
 
 type PendingReason = 'signup' | 'mfa';
 
@@ -31,7 +26,6 @@ function navigateAfterAuth({ decorateUrl }: { decorateUrl: (url: string) => stri
 }
 
 export default function SignInScreen() {
-  const theme = useTheme();
   const { isLoaded, isSignedIn } = useAuth();
   const signInSignal = useSignIn();
   const signUpSignal = useSignUp();
@@ -162,164 +156,138 @@ export default function SignInScreen() {
   };
 
   return (
-    <ThemedView style={styles.container}>
+    <Screen bottomInset="none" scroll={false}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         style={styles.keyboardView}>
-        <SafeAreaView style={styles.safeArea}>
-          <View style={styles.heading}>
-            <ThemedText type="subtitle">Roam</ThemedText>
-            <ThemedText type="small" themeColor="textSecondary">
-              {askingForCode
-                ? `Enter the code we sent to ${emailAddress}.`
-                : 'Sign in, or create an account with your email.'}
-            </ThemedText>
-          </View>
+        <View style={styles.body}>
+          <View style={styles.card}>
+            <View style={styles.heading}>
+              <Logo size={48} />
+              <AppText variant="heading">
+                {askingForCode ? signInCopy.codeTitle : signInCopy.heading}
+              </AppText>
+              <AppText variant="body" color="textSecondary">
+                {askingForCode
+                  ? signInCopy.codeDescription(emailAddress)
+                  : signInCopy.description}
+              </AppText>
+            </View>
 
-          {askingForCode ? (
-            <View style={styles.form}>
-              <TextInput
-                value={code}
-                onChangeText={setCode}
-                placeholder="Verification code"
-                placeholderTextColor={theme.textSecondary}
-                keyboardType="number-pad"
-                autoComplete="one-time-code"
-                textContentType="oneTimeCode"
-                editable={!busy}
-                style={[
-                  styles.input,
-                  { color: theme.text, backgroundColor: theme.backgroundElement },
-                ]}
-              />
+            {askingForCode ? (
+              <View style={styles.form}>
+                <Input
+                  value={code}
+                  onChangeText={setCode}
+                  label={signInCopy.codeLabel}
+                  placeholder="123456"
+                  keyboardType="number-pad"
+                  autoComplete="one-time-code"
+                  textContentType="oneTimeCode"
+                  disabled={busy}
+                />
 
-              <Pressable
-                accessibilityRole="button"
-                disabled={busy || code.trim().length === 0}
-                onPress={submitCode}
-                style={[styles.button, { backgroundColor: theme.text, opacity: busy ? 0.5 : 1 }]}>
-                {busy ? (
-                  <ActivityIndicator color={theme.background} />
-                ) : (
-                  <ThemedText type="smallBold" style={{ color: theme.background }}>
-                    Verify code
-                  </ThemedText>
-                )}
-              </Pressable>
+                <Button
+                  label={signInCopy.verify}
+                  onPress={submitCode}
+                  disabled={busy || code.trim().length === 0}
+                  loading={busy}
+                  icon="arrow-forward"
+                />
 
-              <View style={styles.footerRow}>
-                <Pressable accessibilityRole="button" disabled={busy} onPress={() => startCodeStep(pendingReason)}>
-                  <ThemedText type="linkPrimary">Resend code</ThemedText>
-                </Pressable>
-                <Pressable accessibilityRole="button" disabled={busy} onPress={restart}>
-                  <ThemedText type="linkPrimary">Start over</ThemedText>
-                </Pressable>
+                <View style={styles.footerRow}>
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={signInCopy.resend}
+                    disabled={busy}
+                    onPress={() => startCodeStep(pendingReason)}>
+                    <AppText variant="caption">{signInCopy.resend}</AppText>
+                  </Pressable>
+                  <Pressable
+                    accessibilityRole="button"
+                    accessibilityLabel={signInCopy.startOver}
+                    disabled={busy}
+                    onPress={restart}>
+                    <AppText variant="caption">{signInCopy.startOver}</AppText>
+                  </Pressable>
+                </View>
               </View>
-            </View>
-          ) : (
-            <View style={styles.form}>
-              <TextInput
-                value={emailAddress}
-                onChangeText={setEmailAddress}
-                placeholder="Email address"
-                placeholderTextColor={theme.textSecondary}
-                keyboardType="email-address"
-                autoCapitalize="none"
-                autoComplete="email"
-                textContentType="emailAddress"
-                editable={!busy}
-                style={[
-                  styles.input,
-                  { color: theme.text, backgroundColor: theme.backgroundElement },
-                ]}
-              />
+            ) : (
+              <View style={styles.form}>
+                <Input
+                  value={emailAddress}
+                  onChangeText={setEmailAddress}
+                  label={signInCopy.emailLabel}
+                  placeholder="you@example.com"
+                  icon="mail-outline"
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                  autoComplete="email"
+                  textContentType="emailAddress"
+                  disabled={busy}
+                />
 
-              <TextInput
-                value={password}
-                onChangeText={setPassword}
-                placeholder="Password"
-                placeholderTextColor={theme.textSecondary}
-                secureTextEntry
-                autoCapitalize="none"
-                autoComplete="current-password"
-                textContentType="password"
-                editable={!busy}
-                onSubmitEditing={submitCredentials}
-                style={[
-                  styles.input,
-                  { color: theme.text, backgroundColor: theme.backgroundElement },
-                ]}
-              />
+                <Input
+                  value={password}
+                  onChangeText={setPassword}
+                  label={signInCopy.passwordLabel}
+                  placeholder="Your password"
+                  icon="lock-closed-outline"
+                  secure
+                  autoCapitalize="none"
+                  autoComplete="current-password"
+                  textContentType="password"
+                  disabled={busy}
+                  onSubmitEditing={submitCredentials}
+                />
 
-              <Pressable
-                accessibilityRole="button"
-                disabled={busy || emailAddress.trim().length === 0 || password.length === 0}
-                onPress={submitCredentials}
-                style={[styles.button, { backgroundColor: theme.text, opacity: busy ? 0.5 : 1 }]}>
-                {busy ? (
-                  <ActivityIndicator color={theme.background} />
-                ) : (
-                  <ThemedText type="smallBold" style={{ color: theme.background }}>
-                    Continue
-                  </ThemedText>
-                )}
-              </Pressable>
+                <Button
+                  label={signInCopy.submit}
+                  onPress={submitCredentials}
+                  disabled={busy || emailAddress.trim().length === 0 || password.length === 0}
+                  loading={busy}
+                  icon="arrow-forward"
+                />
 
-              <ThemedText type="small" themeColor="textSecondary">
-                New to Roam? The same form creates your account.
-              </ThemedText>
-            </View>
-          )}
+                <AppText variant="caption" color="textSecondary">
+                  {signInCopy.newAccountNote}
+                </AppText>
+              </View>
+            )}
 
-          {fieldMessage ? (
-            <ThemedText type="small" style={{ color: '#D93F3F' }}>
-              {fieldMessage}
-            </ThemedText>
-          ) : null}
+            {fieldMessage ? <Alert tone="error" message={fieldMessage} /> : null}
 
-          <View nativeID="clerk-captcha" />
-        </SafeAreaView>
+            <View nativeID="clerk-captcha" />
+          </View>
+        </View>
       </KeyboardAvoidingView>
-    </ThemedView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   keyboardView: {
     flex: 1,
   },
-  safeArea: {
+  body: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
-    gap: Spacing.four,
-    paddingHorizontal: Spacing.four,
-    maxWidth: MaxContentWidth,
-    width: '100%',
+    paddingVertical: spacing[6],
+  },
+  card: {
     alignSelf: 'center',
+    width: '100%',
+    maxWidth: layout.formMaxWidth,
+    gap: spacing[6],
+    padding: spacing[6],
+    backgroundColor: color.surface,
+    borderRadius: radius.xl,
   },
   heading: {
-    gap: Spacing.two,
+    gap: spacing[2],
   },
   form: {
-    alignSelf: 'stretch',
-    gap: Spacing.three,
-  },
-  input: {
-    borderRadius: Spacing.three,
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.three,
-    fontSize: 16,
-  },
-  button: {
-    borderRadius: Spacing.three,
-    paddingVertical: Spacing.three,
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: 48,
+    gap: spacing[4],
   },
   footerRow: {
     flexDirection: 'row',
