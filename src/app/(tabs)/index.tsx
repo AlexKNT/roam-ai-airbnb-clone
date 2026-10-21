@@ -1,5 +1,7 @@
+import { useEffect } from 'react';
+import { useAuth, useUser } from '@clerk/expo';
 import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AnimatedIcon } from '@/components/animated-icon';
@@ -8,6 +10,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { WebBadge } from '@/components/web-badge';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { posthogLogger } from '@/config/posthog';
 
 function getDevMenuHint() {
   if (Platform.OS === 'web') {
@@ -29,6 +32,13 @@ function getDevMenuHint() {
 }
 
 export default function HomeScreen() {
+  const { signOut } = useAuth();
+  const { user } = useUser();
+
+  useEffect(() => {
+    posthogLogger.info('home_screen_displayed', { screen: 'home' });
+  }, []);
+
   return (
     <ThemedView style={styles.container}>
       <SafeAreaView style={styles.safeArea}>
@@ -53,6 +63,21 @@ export default function HomeScreen() {
             title="Fresh start"
             hint={<ThemedText type="code">npm run reset-project</ThemedText>}
           />
+        </ThemedView>
+
+        <ThemedView type="backgroundElement" style={styles.accountContainer}>
+          <View style={styles.accountRow}>
+            <ThemedText
+              type="small"
+              themeColor="textSecondary"
+              numberOfLines={1}
+              style={styles.accountEmail}>
+              {user?.primaryEmailAddress?.emailAddress ?? 'Signed in'}
+            </ThemedText>
+            <Pressable accessibilityRole="button" onPress={() => signOut()}>
+              <ThemedText type="linkPrimary">Sign out</ThemedText>
+            </Pressable>
+          </View>
         </ThemedView>
 
         {Platform.OS === 'web' && <WebBadge />}
@@ -81,6 +106,21 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: Spacing.four,
     gap: Spacing.four,
+  },
+  accountContainer: {
+    alignSelf: 'stretch',
+    paddingHorizontal: Spacing.three,
+    paddingVertical: Spacing.three,
+    borderRadius: Spacing.three,
+  },
+  accountRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: Spacing.two,
+  },
+  accountEmail: {
+    flexShrink: 1,
   },
   title: {
     textAlign: 'center',

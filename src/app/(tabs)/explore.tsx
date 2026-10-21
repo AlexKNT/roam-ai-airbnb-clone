@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Image } from 'expo-image';
 import { SymbolView } from 'expo-symbols';
 import { Platform, Pressable, ScrollView, StyleSheet } from 'react-native';
@@ -9,10 +10,15 @@ import { ThemedView } from '@/components/themed-view';
 import { Collapsible } from '@/components/ui/collapsible';
 import { WebBadge } from '@/components/web-badge';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { posthogLogger } from '@/config/posthog';
 import { useTheme } from '@/hooks/use-theme';
 
 export default function TabTwoScreen() {
   const safeAreaInsets = useSafeAreaInsets();
+
+  useEffect(() => {
+    posthogLogger.info('explore_screen_displayed', { screen: 'explore' });
+  }, []);
   const insets = {
     ...safeAreaInsets,
     bottom: safeAreaInsets.bottom + BottomTabInset + Spacing.three,

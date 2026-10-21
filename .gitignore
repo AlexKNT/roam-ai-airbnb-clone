@@ -43,3 +43,7 @@ example
 # generated native folders
 /ios
 /android
+.env.local
+
+# posthog wizard scratch
+.posthog-wizard-cache/

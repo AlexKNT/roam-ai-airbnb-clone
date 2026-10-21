@@ -32,7 +32,7 @@ This file is the project's memory: it holds every decision that is still true. P
 
 - **App:** Expo SDK 58 (`expo ~58.0.16`), React Native 0.88, React 19.3, Expo Router, TypeScript in strict mode. React Compiler and typed routes are switched on in `app.json`.
 - **Package manager:** npm, lockfile is `package-lock.json`.
-- **Integrations:** Clerk, Sanity, PostHog and TypeSafe are not installed yet, so none of them appear in `package.json`. The sections below say where each one belongs.
+- **Integrations:** Clerk (`@clerk/expo`, keys in `.env.local`), Sanity Studio in `studio/` (project `9218z53u`, dataset `production`), PostHog (`posthog-react-native`). TypeSafe is not installed yet.
 - **Paths:** `@/*` maps to `src/*` and `@/assets/*` to `assets/*`.
 
 ## Build approach
@@ -49,6 +49,8 @@ npx tsc --noEmit            # type check
 npx expo-doctor             # diagnose dependency and config issues
 npx expo install --fix      # fix incompatible package versions
 npx eas-cli@latest <cmd>    # EAS builds, submits, and updates (use instead of bare `eas`)
+cd studio && npm run dev    # Sanity Studio (separate app, own node_modules)
+cd studio && npm run deploy # deploy Studio; required before Sanity Context works
 ~~~
 
 ## Environment
@@ -61,6 +63,9 @@ npx eas-cli@latest <cmd>    # EAS builds, submits, and updates (use instead of b
 
 - Expo ships breaking changes every SDK release, so don't trust memory. Before touching an Expo, EAS, or React Native API, check the `expo` major version in `package.json` and read `https://docs.expo.dev/versions/v<major>.0.0/`. For anything else, start from https://docs.expo.dev/llms.txt and follow its links.
 - Routes live in `src/app/`: every file is a screen and `_layout.tsx` files define navigators. API routes are `src/app/api/*+api.ts`. Keep components, hooks, and utils outside `src/app/`.
+- Signed-in screens sit in `src/app/(tabs)/`; `src/app/sign-in.tsx` is the only public screen. Each group's `_layout.tsx` redirects on `useAuth()`, checking `isLoaded` before `isSignedIn`.
+- `ClerkProvider` wraps the root layout with `tokenCache` from `@clerk/expo/token-cache`, so sessions survive restarts. Auth screens are hand-built with `useSignIn()` / `useSignUp()`, never the prebuilt `AuthView`.
+- Root `tsconfig.json` extends `./node_modules/expo/tsconfig.base.json` rather than `expo/tsconfig.base`: `sanity build` inside `studio/` resolves `extends` relative to the config file, and the bare form fails the Studio build.
 - Import `Link`, `router`, and `useLocalSearchParams` from `expo-router`. Docs: https://docs.expo.dev/router/introduction.md
 - `ios/` and `android/` are generated. Never create or edit them by hand; configure native behavior in `app.json` and config plugins.
 - Expo Go only includes its bundled native modules. After adding a library with native code, switch to a development build (`npx expo run:ios`).
@@ -76,7 +81,7 @@ Each tool has one job. Ask before moving a responsibility to a different tool.
 - **Policy knowledge:** a Sanity Context endpoint in Knowledge Base mode. Context endpoints are created in the Dashboard's Context app and read with an organization token (Context Viewer), per https://www.sanity.io/docs/ai/context-migration-guide. One endpoint serves one mode. The Context skill still describes `sanity.agentContext` Studio documents with a project token; that route is deprecated, so don't use it.
 - **Typed decisions** (which stay topics and policies answer a question): Jev, called from API routes through the AI SDK's `experimental_evaluate` with the `@ai-sdk/typesafe-ai` provider and `TYPESAFE_AI_API_KEY`. No Vercel AI Gateway. Keep `ai` and `@ai-sdk/typesafe-ai` pinned to exact versions, since the API is experimental.
 - **Answer text:** none generated. Answers show the stay's own fields and policy text word for word, with their source. No LLM runs in the app.
-- **Analytics:** PostHog, identified through Clerk.
+- **Analytics:** PostHog, identified through Clerk (`src/components/clerk-analytics.tsx`).
 
 ## Rules
 
