@@ -28,6 +28,17 @@ Expo React Native rental app. Guests describe a stay in one sentence ("quiet pet
 
 This file is the project's memory: it holds every decision that is still true. Plans in `prompts/` are history.
 
+## Stack
+
+- **App:** Expo SDK 58 (`expo ~58.0.16`), React Native 0.88, React 19.3, Expo Router, TypeScript in strict mode. React Compiler and typed routes are switched on in `app.json`.
+- **Package manager:** npm, lockfile is `package-lock.json`.
+- **Integrations:** Clerk, Sanity, PostHog and TypeSafe are not installed yet, so none of them appear in `package.json`. The sections below say where each one belongs.
+- **Paths:** `@/*` maps to `src/*` and `@/assets/*` to `assets/*`.
+
+## Build approach
+
+`<TBD, set by /scope>`
+
 ## Commands
 
 ~~~bash
@@ -40,10 +51,17 @@ npx expo install --fix      # fix incompatible package versions
 npx eas-cli@latest <cmd>    # EAS builds, submits, and updates (use instead of bare `eas`)
 ~~~
 
+## Environment
+
+- Copy `.env.example` to `.env.local` and fill in values there. `.env` and `.env.*` are ignored by git except `.env.example`.
+- There is no test runner and no CI yet. `npx expo lint` and `npx tsc --noEmit` are the only checks, and both pass on `master`.
+- Lint is ESLint 9 with a flat config in `eslint.config.js`, from `eslint-config-expo`.
+
 ## Expo
 
 - Expo ships breaking changes every SDK release, so don't trust memory. Before touching an Expo, EAS, or React Native API, check the `expo` major version in `package.json` and read `https://docs.expo.dev/versions/v<major>.0.0/`. For anything else, start from https://docs.expo.dev/llms.txt and follow its links.
 - Routes live in `src/app/`: every file is a screen and `_layout.tsx` files define navigators. API routes are `src/app/api/*+api.ts`. Keep components, hooks, and utils outside `src/app/`.
+- Import `Link`, `router`, and `useLocalSearchParams` from `expo-router`. Docs: https://docs.expo.dev/router/introduction.md
 - `ios/` and `android/` are generated. Never create or edit them by hand; configure native behavior in `app.json` and config plugins.
 - Expo Go only includes its bundled native modules. After adding a library with native code, switch to a development build (`npx expo run:ios`).
 
@@ -113,42 +131,10 @@ End every piece of work that changes code (features and fixes, not answers to qu
 - Screens that load data handle loading, error, and empty states.
 - AI features are tried against realistic inputs, and failures are explained by cause: missing data, the decision Jev made, the query, or the code.
 
-## Expo has changed — do not trust your training data
-
-Expo ships breaking changes every SDK release. APIs you remember are likely renamed, moved, or removed. Before writing any code that touches an Expo, EAS, or React Native API:
-
-1. Read the major version of the `expo` package in `package.json`.
-2. Fetch the matching versioned docs: `https://docs.expo.dev/versions/v<major>.0.0/`
-3. For anything else, fetch https://docs.expo.dev/llms.txt — an index of all Expo docs with corrections to common LLM misconceptions. Follow its links to the specific page you need; never answer from memory.
-
-## Commands
-
-Use `bunx` instead of `npx` if the project uses bun (`bun.lock` present).
-
-```bash
-npx expo install <package>  # ALWAYS use instead of npm/yarn/pnpm/bun add — resolves SDK-compatible versions
-npx expo start              # start the dev server
-npx expo lint               # lint
-npx tsc --noEmit            # typecheck
-npx expo-doctor             # diagnose dependency and config issues
-npx expo install --fix      # fix incompatible package versions
-```
-
-Run lint and typecheck before declaring any task done.
-
-## Navigation & Routing
-
-- Use **Expo Router** for all navigation. Routes live in `src/app/` — every file there is a screen, `_layout.tsx` files define navigators. Keep non-route code (components, hooks, utils) outside `src/app/`.
-- Import `Link`, `router`, and `useLocalSearchParams` from `expo-router`.
-- Docs: https://docs.expo.dev/router/introduction.md
-
 ## Building with EAS
 
-Use EAS to build, sign, and submit the app in the cloud (`eas build`, `eas submit`) and to ship over-the-air updates (`eas update`) — no local Xcode or Android Studio required. Run EAS CLI as `bunx eas-cli <command>` in Bun projects, or `npx eas-cli@latest <command>` otherwise; substitute that for bare `eas` in docs examples.
+EAS builds, signs and submits the app in the cloud and ships over the air updates, with no local Xcode or Android Studio. Run it as `npx eas-cli@latest <command>`.
+
+The project is not linked to EAS yet: there is no `eas.json`.
+
 Docs: https://docs.expo.dev/eas/index.md
-
-## Rules
-
-- If `ios/` and `android/` directories do not exist, they are generated (Continuous Native Generation). Never create or edit them by hand — configure native behavior in `app.json` and config plugins.
-- Expo Go only includes its bundled native modules. After adding a library with native code, the app needs a development build: `npx expo run:ios|android` locally, or `eas build --profile development`.
-- Prefer recommended Expo modules over third-party libraries, and check your available skills before adding dependencies. Docs: https://docs.expo.dev/versions/latest/index.md
