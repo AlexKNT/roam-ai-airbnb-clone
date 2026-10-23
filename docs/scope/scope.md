@@ -22,7 +22,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 3 | Demo content seed | Foundation | done |
 | 4 | Home feed | Slice 1 · Browse | in-progress |
 | 5 | Stay detail | Slice 1 · Browse | in-progress |
-| 6 | Natural language search | Slice 2 · Search | planned |
+| 6 | Natural language search | Slice 2 · Search | in-progress |
 | 7 | Grounded policy chat | Slice 3 · Chat | planned |
 | 8 | Saved stays | Slice 4 · Saving | planned |
 | 9 | Profile & account | Slice 5 · Account | planned |
@@ -90,10 +90,16 @@ Open a stay for its gallery, name, place, rating, amenities, policy entry, host 
 
 ## Slice 2 · Search
 
-### 6. Natural language search · needs a decision
+### 6. Natural language search
 Type one sentence and get ranked stays back, with hard constraints as filters and soft intent as ranking.
 **Done when:** a sentence such as "quiet pet friendly cabin with a hot tub under $300 a night" returns matching stays; price, guests, type, amenities and pets filter through GROQ params; quiet, cozy and secluded rank through embeddings; chips, result count, sort and empty state match the design; an unclear request falls back to a clear message rather than wrong results.
-- [ ] Design it (spec): `/architect natural language search`
+- [x] Design it (spec): `/architect natural language search` · spec [0003](../specs/0003-natural-language-search/index.md)
+- [ ] Build it: `/develop natural language search` · code in `src/search/`, `src/app/(tabs)/search.tsx`, `src/components/search/`
+  - [ ] Thread start: parser for type and price, search query, field and cards on real results (AC-2, AC-3, AC-5, AC-13, AC-19)
+  - [ ] Parser vocabulary, chips, count line and sort menu (AC-2, AC-6, AC-7, AC-8, AC-9)
+  - [ ] Screen chrome, loading, error, empty, focus and filter notice (AC-1, AC-10, AC-11, AC-14, AC-15)
+  - [ ] Embeddings, degrade path, session state, analytics, accessibility and design match (AC-4, AC-12, AC-16, AC-17, AC-18, AC-19)
+- [ ] Verify it: `/check verify natural language search`
 
 ## Slice 3 · Chat
 
