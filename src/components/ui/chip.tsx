@@ -21,7 +21,7 @@ export function Chip({ label, selected = false, tone = 'lavender', icon, onPress
       ? color.primary
       : color.lavender
     : color.surfaceGray;
-  const ink = selected ? color.darkInk : color.textSecondary;
+  const ink = selected ? color.darkInk : color.textPrimary;
 
   return (
     <Pressable

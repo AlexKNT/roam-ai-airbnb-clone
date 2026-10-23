@@ -63,7 +63,7 @@ cd studio && npm run deploy # deploy Studio; required before Sanity Context work
 
 - Expo ships breaking changes every SDK release, so don't trust memory. Before touching an Expo, EAS, or React Native API, check the `expo` major version in `package.json` and read `https://docs.expo.dev/versions/v<major>.0.0/`. For anything else, start from https://docs.expo.dev/llms.txt and follow its links.
 - Routes live in `src/app/`: every file is a screen and `_layout.tsx` files define navigators. API routes are `src/app/api/*+api.ts`. Keep components, hooks, and utils outside `src/app/`.
-- Signed-in screens sit in `src/app/(tabs)/`; `src/app/sign-in.tsx` is the only public screen. Each group's `_layout.tsx` redirects on `useAuth()`, checking `isLoaded` before `isSignedIn`.
+- Signed-in screens sit in `src/app/(tabs)/`; `src/app/sign-in.tsx` is the only public screen. Each group's `_layout.tsx` redirects on `useAuth()`, checking `isLoaded` before `isSignedIn`. Routes outside the tabs carry their own gate the same way, as `src/app/stay/_layout.tsx` does.
 - `ClerkProvider` wraps the root layout with `tokenCache` from `@clerk/expo/token-cache`, so sessions survive restarts. Auth screens are hand-built with `useSignIn()` / `useSignUp()`, never the prebuilt `AuthView`.
 - Root `tsconfig.json` extends `./node_modules/expo/tsconfig.base.json` rather than `expo/tsconfig.base`: `sanity build` inside `studio/` resolves `extends` relative to the config file, and the bare form fails the Studio build.
 - Import `Link`, `router`, and `useLocalSearchParams` from `expo-router`. Docs: https://docs.expo.dev/router/introduction.md
@@ -76,6 +76,8 @@ Each tool has one job. Ask before moving a responsibility to a different tool.
 
 - **Auth:** Clerk is the source of truth. The app keeps its own custom auth screens. Set Clerk up through the Clerk CLI and use the Clerk MCP for current Expo patterns.
 - **Content:** Sanity (properties, hosts, policies, house rules). Studio is a standalone app in `studio/`. Schema deploys and content changes go through the Sanity MCP, and generated property copy uses Agent Actions.
+- **Feed reads:** Home asks `useStays(type)` once per chip, and the chips are `stayTypeFilters` in `src/constants/copy.ts`, so a new stay type is one constants edit plus one schema edit.
+- **Stay detail:** one read through `useStay(slug)`, every field printed as the stay holds it. Amenity labels and icons both live in `src/constants/amenities.ts`, so the card and the detail screen never drift. Short messages use the `Notice` dialog in `src/components/ui/notice.tsx`, because React Native's `Alert` does nothing on web.
 - **Exact constraints** (price, guests, type, amenities, pets, place): GROQ filters, with values always passed as params.
 - **Soft intent** (quiet, cozy, secluded): Dataset Embeddings via `text::semanticSimilarity()` inside `score()`.
 - **Policy knowledge:** a Sanity Context endpoint in Knowledge Base mode. Context endpoints are created in the Dashboard's Context app and read with an organization token (Context Viewer), per https://www.sanity.io/docs/ai/context-migration-guide. One endpoint serves one mode. The Context skill still describes `sanity.agentContext` Studio documents with a project token; that route is deprecated, so don't use it.
@@ -94,6 +96,7 @@ Each tool has one job. Ask before moving a responsibility to a different tool.
 - API routes verify the Clerk session before doing any work.
 - PostHog failures never block the app. Never send what guests type, tokens, or personal data in events.
 - Let Sanity generate document IDs. Model relationships as references.
+- Screens whose background is not `surfaceGray` pass `Screen`'s `background` token instead of styling their own root view.
 - Ask before adding a dependency or service, changing the Sanity schema once content exists, or deleting data. Prefer Expo modules over third-party libraries.
 - Whenever you need input from the user, ask through your tool's built-in question panel so they pick from options instead of typing. Give two to four clear options with the recommended one first. Fall back to plain text only if no such panel exists.
 

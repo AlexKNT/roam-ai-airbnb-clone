@@ -18,10 +18,10 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | C | Analytics identity | Existing base | existing |
 | D | Sanity Studio shell | Existing base | existing |
 | 1 | Design system & app shell | Foundation | in-progress |
-| 2 | Content model & stay queries | Foundation | planned |
-| 3 | Demo content seed | Foundation | planned |
-| 4 | Home feed | Slice 1 · Browse | planned |
-| 5 | Stay detail | Slice 1 · Browse | planned |
+| 2 | Content model & stay queries | Foundation | in-progress |
+| 3 | Demo content seed | Foundation | done |
+| 4 | Home feed | Slice 1 · Browse | in-progress |
+| 5 | Stay detail | Slice 1 · Browse | in-progress |
 | 6 | Natural language search | Slice 2 · Search | planned |
 | 7 | Grounded policy chat | Slice 3 · Chat | planned |
 | 8 | Saved stays | Slice 4 · Saving | planned |
@@ -56,27 +56,37 @@ Map the design system image to tokens, build the base components, and replace th
   - [ ] Gallery match, template cleanup, lint and type check (AC-9, AC-10)
 - [ ] Verify it: `/check verify design system & app shell`
 
-### 2. Content model & stay queries · needs a decision
+### 2. Content model & stay queries
 The property, host, policy and house rule documents every screen reads, plus the typed queries home, detail and search use.
 **Done when:** a stay carries name, place, price, rating and review count, guests, type, amenities, pets, images, host reference, cancellation policy and house rules; text that should affect ranking lives on the stay document; the app reads stays through parameterized queries with typed results.
-- [ ] Design it (spec): `/architect content model & stay queries`
+- [x] Design it (spec): `/architect content model & stay queries` · spec [0002](../specs/0002-content-model-stay-queries/index.md)
+- [x] Build it: `/develop content model & stay queries` · code in `src/sanity/`, `studio/schemaTypes/`
+  - [x] Thread start: Sanity client config, four schema types, schema deployed (AC-1, AC-9, AC-10, AC-11)
+  - [x] Detail read: result types, `getStayBySlug`, image helper, `useStay` (AC-2, AC-4, AC-5, AC-6, AC-8, AC-12)
+  - [x] List read: `getStays`, `useStays`, ordering, tie break and cap (AC-3, AC-6)
+  - [x] Edge states and checks: deleted references, label and copy constants, lint and type check (AC-7, AC-13)
+- [ ] Verify it: `/check verify content model & stay queries`
 
 ### 3. Demo content seed
 Seed enough stays and policies that the feed, search and chat have real material to work with.
 **Done when:** one local script seeds at least 12 stays across cabin, beach, city and villa with images, amenities and full policies, and the feed and detail screens read them.
-- [ ] Build it: `/develop demo content seed`
+- [x] Build it: `/develop demo content seed` · code in `scripts/seed-demo-content.mjs`
 
 ## Slice 1 · Browse
 
 ### 4. Home feed
 The first real screen: greeting, hero, search entry, category chips and stay cards, fed by Sanity.
 **Done when:** the feed lists seeded stays, chips filter by stay type through GROQ with a real selected state, each card opens its stay, and loading, empty and error states render. The search entry renders per design and starts working in Slice 2.
-- [ ] Build it: `/develop home feed`
+- [x] Build it: `/develop home feed` · code in `src/app/(tabs)/index.tsx`, `src/components/home/`
 
 ### 5. Stay detail
 Open a stay for its gallery, name, place, rating, amenities, policy entry, host and price.
 **Done when:** the screen matches the design and prints the stay's own fields word for word; Book this stay shows a short booking is coming soon notice instead of failing silently. Ask about policies is present and wired when the chat lands in Slice 3.
-- [ ] Build it: `/develop stay detail`
+- [x] Build it: `/develop stay detail` · code in `src/app/stay/`, `src/components/stay/`, `src/components/ui/notice.tsx`
+  - [x] Gallery, name, rating, place and the four amenities
+  - [x] Policy and cancellation cards, host row, notice dialog
+  - [x] Summary, stay facts, check in times, house rules and the booking bar
+- [ ] Verify it: `/check verify stay detail`
 
 ## Slice 2 · Search
 

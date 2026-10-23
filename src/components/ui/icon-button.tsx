@@ -5,6 +5,7 @@ import { Icon, type AppIconName } from '@/components/ui/icon';
 import { color, layout, opacity, radius } from '@/theme';
 
 export type IconButtonTone = 'surface' | 'plain';
+export type IconButtonShape = 'circle' | 'soft';
 
 export type IconButtonProps = {
   icon: AppIconName;
@@ -13,13 +14,23 @@ export type IconButtonProps = {
   onPress: () => void;
   size?: number;
   tone?: IconButtonTone;
+  shape?: IconButtonShape;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
 };
 
 export const IconButton = forwardRef<ComponentRef<typeof Pressable>, IconButtonProps>(
   function IconButton(
-    { icon, label, onPress, size = layout.activePill, tone = 'surface', disabled = false, style },
+    {
+      icon,
+      label,
+      onPress,
+      size = layout.activePill,
+      tone = 'surface',
+      shape = 'circle',
+      disabled = false,
+      style,
+    },
     ref,
   ) {
     return (
@@ -32,7 +43,11 @@ export const IconButton = forwardRef<ComponentRef<typeof Pressable>, IconButtonP
         onPress={onPress}
         style={({ pressed }) => [
           styles.base,
-          { width: size, height: size, borderRadius: radius.pill },
+          {
+            width: size,
+            height: size,
+            borderRadius: shape === 'circle' ? radius.pill : radius.xl,
+          },
           tone === 'surface' && styles.surface,
           pressed && styles.pressed,
           disabled && styles.disabled,

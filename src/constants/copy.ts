@@ -1,6 +1,9 @@
 import type { ComponentProps } from 'react';
 import type { Ionicons } from '@expo/vector-icons';
 
+import type { AppIconName } from '@/components/ui/icon';
+import type { StayType } from '@/sanity/types';
+
 type IoniconName = ComponentProps<typeof Ionicons>['name'];
 
 export const brand = {
@@ -24,11 +27,9 @@ export const tabItems: readonly TabItem[] = [
   { route: 'profile', label: 'Profile', icon: 'person-outline', activeIcon: 'person' },
 ];
 
-export const screenCopy: Record<TabRoute, { title: string; description: string }> = {
-  index: {
-    title: 'Find your next stay',
-    description: 'Tell Roam the trip you have in mind and the stays that fit rise to the top.',
-  },
+export type PlaceholderRoute = Exclude<TabRoute, 'index'>;
+
+export const screenCopy: Record<PlaceholderRoute, { title: string; description: string }> = {
   search: {
     title: 'Search stays',
     description: 'One sentence is enough. Search opens in the next slice of Roam.',
@@ -56,4 +57,95 @@ export const signInCopy = {
   resend: 'Resend code',
   startOver: 'Start over',
   newAccountNote: 'New to Roam? The same form creates your account.',
+} as const;
+
+export const stayCopy = {
+  retry: 'Try again',
+  loadError: 'We could not load this stay right now. Check your connection and try again.',
+  listError: 'We could not load stays right now. Check your connection and try again.',
+  configurationError:
+    'Stays are not set up yet. Check the Sanity project values and restart the app.',
+  notFoundTitle: 'Stay not found',
+  notFoundDescription: 'This stay may have been removed, or the link is wrong.',
+} as const;
+
+function countOf(count: number, noun: string) {
+  return `${count} ${noun}${count === 1 ? '' : 's'}`;
+}
+
+export const stayDetailCopy = {
+  back: 'Go back',
+  share: 'Share this stay',
+  save: 'Save this stay',
+  shareMessage: (name: string, place: string) => `${name} in ${place} on Roam`,
+  loading: 'Opening this stay.',
+  galleryLabel: (position: number, total: number) => `Photo ${position} of ${total}`,
+  galleryImage: (name: string, position: number) => `${name}, photo ${position}`,
+  rating: (rating: number, reviews: number) => `Rated ${rating.toFixed(1)} from ${reviews} reviews`,
+  amenities: 'Amenities',
+  policyChatTitle: 'Ask about policies',
+  policyChatDescription: 'Cancellation, house rules, pets, check in and more.',
+  policyChatNoticeTitle: 'Policy chat is coming soon',
+  policyChatNotice: 'Soon you can ask this stay about cancellation, house rules, pets and check in.',
+  hostedBy: (name: string) => `Hosted by ${name}`,
+  hostAvatar: (name: string) => `${name}, your host`,
+  superhost: 'Superhost',
+  hostNoticeTitle: 'Host profiles are coming soon',
+  hostNotice: 'More about your host arrives in a later update.',
+  stayDetails: 'Stay details',
+  facts: (values: {
+    guests: number;
+    bedrooms: number | null;
+    beds: number | null;
+    baths: number | null;
+    petsAllowed: boolean;
+  }) =>
+    [
+      countOf(values.guests, 'guest'),
+      values.bedrooms === null ? null : countOf(values.bedrooms, 'bedroom'),
+      values.beds === null ? null : countOf(values.beds, 'bed'),
+      values.baths === null ? null : countOf(values.baths, 'bath'),
+      values.petsAllowed ? 'Pets welcome' : 'No pets',
+    ]
+      .filter((part): part is string => part !== null)
+      .join(' · '),
+  checkInOut: (checkIn: string, checkOut: string) => `Check in ${checkIn} · Check out ${checkOut}`,
+  houseRules: 'House rules',
+  book: 'Book this stay',
+  perNight: '/ night',
+  noticeDismiss: 'Got it',
+  bookingNoticeTitle: 'Booking is coming soon',
+  bookingNotice: 'You will be able to book this stay in a later update.',
+  saveNoticeTitle: 'Saving is coming soon',
+  saveNotice: 'Saved stays arrive in Trips in a later update.',
+} as const;
+
+export type StayTypeFilter = {
+  type: StayType | 'all';
+  label: string;
+  icon: AppIconName;
+};
+
+/** Chips on Home, in the order the design sheet shows them. */
+export const stayTypeFilters: readonly StayTypeFilter[] = [
+  { type: 'all', label: 'All Stays', icon: 'home' },
+  { type: 'cabin', label: 'Cabins', icon: 'pine-tree' },
+  { type: 'beach', label: 'Beach', icon: 'waves' },
+  { type: 'city', label: 'City', icon: 'business-outline' },
+  { type: 'villa', label: 'Villas', icon: 'palm-tree' },
+];
+
+export const homeCopy = {
+  greeting: (name: string) => `Hey, ${name} 👋`,
+  greetingFallback: 'Hey there 👋',
+  headline: 'Find your next stay',
+  prompt: 'quiet pet friendly cabin with hot tub',
+  searchLabel: 'Open search',
+  promptLabel: 'Search stays by describing your trip',
+  avatarLabel: 'Your profile photo',
+  cardActionLabel: (title: string) => `Open ${title}`,
+  loading: 'Finding stays for you.',
+  emptyTitle: 'Nothing listed here yet',
+  emptyDescription: 'No stays of this kind are listed right now. Try another chip.',
+  emptyAction: 'Show all stays',
 } as const;

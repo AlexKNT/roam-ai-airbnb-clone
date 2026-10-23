@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { ScrollView, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { color, layout, spacing } from '@/theme';
+import { color, layout, spacing, type ColorToken } from '@/theme';
 
 export type ScreenProps = {
   children: ReactNode;
@@ -10,6 +10,8 @@ export type ScreenProps = {
   scroll?: boolean;
   /** `tabBar` keeps content clear of the floating bar. Pass `none` when the bar is absent. */
   bottomInset?: 'tabBar' | 'none';
+  /** Screens that are not `surfaceGray` name their token here instead of styling a root. */
+  background?: ColorToken;
   style?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;
 };
@@ -26,6 +28,7 @@ export function Screen({
   children,
   scroll = true,
   bottomInset = 'tabBar',
+  background = 'surfaceGray',
   style,
   contentContainerStyle,
 }: ScreenProps) {
@@ -37,7 +40,9 @@ export function Screen({
   ];
 
   return (
-    <SafeAreaView edges={['top', 'left', 'right']} style={[styles.root, style]}>
+    <SafeAreaView
+      edges={['top', 'left', 'right']}
+      style={[styles.root, { backgroundColor: color[background] }, style]}>
       {scroll ? (
         <ScrollView
           contentContainerStyle={contentStyle}
@@ -55,7 +60,6 @@ export function Screen({
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: color.surfaceGray,
   },
   content: {
     flexGrow: 1,

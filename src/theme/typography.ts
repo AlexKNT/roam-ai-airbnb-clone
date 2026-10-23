@@ -14,6 +14,7 @@ export const fontFamily = {
 export const type = {
   display: { fontFamily: fontFamily.bold, fontSize: 56, lineHeight: 56 },
   heading: { fontFamily: fontFamily.bold, fontSize: 32, lineHeight: 38 },
+  subheading: { fontFamily: fontFamily.semibold, fontSize: 17, lineHeight: 24 },
   body: { fontFamily: fontFamily.regular, fontSize: 16, lineHeight: 24 },
   caption: { fontFamily: fontFamily.medium, fontSize: 14, lineHeight: 20 },
   button: { fontFamily: fontFamily.medium, fontSize: 17, lineHeight: 22 },

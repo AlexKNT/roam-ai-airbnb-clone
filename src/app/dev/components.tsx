@@ -10,12 +10,18 @@ import { IconButton } from '@/components/ui/icon-button';
 import { Input } from '@/components/ui/input';
 import { ListingCard } from '@/components/ui/listing-card';
 import { Logo } from '@/components/ui/logo';
+import { Notice } from '@/components/ui/notice';
 import { PolicyCard } from '@/components/ui/policy-card';
 import { ProfileRow } from '@/components/ui/profile-row';
 import { Screen } from '@/components/ui/screen';
 import { SearchField } from '@/components/ui/search-field';
 import { Tag } from '@/components/ui/tag';
-import { color, radius, spacing } from '@/theme';
+import { StayAmenities } from '@/components/stay/stay-amenities';
+import { StayBookingBar } from '@/components/stay/stay-booking-bar';
+import { StayGallery } from '@/components/stay/stay-gallery';
+import { StayHostRow } from '@/components/stay/stay-host-row';
+import { StayRating } from '@/components/stay/stay-rating';
+import { color, layout, radius, spacing } from '@/theme';
 
 const sampleStay = {
   image: 'https://picsum.photos/seed/roam-cabin/800/600',
@@ -25,6 +31,16 @@ const sampleStay = {
   reviewCount: 342,
   pricePerNight: 280,
   amenities: ['Hot Tub', 'Pet Friendly'],
+};
+
+const sampleGallery = [1, 2, 3].map((index) => ({
+  url: `https://picsum.photos/seed/roam-stay-${index}/900/700`,
+  alt: `Cabin view ${index}`,
+}));
+
+const sampleHostAvatar = {
+  url: 'https://picsum.photos/seed/roam-host/160/160',
+  alt: 'Alex Rivera',
 };
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
@@ -41,6 +57,8 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 export default function ComponentGalleryScreen() {
   const [search, setSearch] = useState('Cabins in California');
   const [inputValue, setInputValue] = useState('Joanna Smith');
+  const [galleryPosition, setGalleryPosition] = useState(0);
+  const [noticeOpen, setNoticeOpen] = useState(false);
 
   if (!__DEV__) return <Redirect href="/" />;
 
@@ -64,6 +82,7 @@ export default function ComponentGalleryScreen() {
       <Section title="Type">
         <AppText variant="display">Display</AppText>
         <AppText variant="heading">Heading</AppText>
+        <AppText variant="subheading">Subheading</AppText>
         <AppText variant="body">Body copy sits at sixteen with a relaxed line height.</AppText>
         <AppText variant="caption" color="textSecondary">
           Caption
@@ -146,6 +165,23 @@ export default function ComponentGalleryScreen() {
         </View>
       </Section>
 
+      <View style={styles.section}>
+        <AppText variant="caption" color="textSecondary">
+          Stay gallery
+        </AppText>
+        <View style={styles.bleed}>
+          <StayGallery
+            images={sampleGallery}
+            name="Modern Cabin with Hot Tub"
+            position={galleryPosition}
+            onPositionChange={setGalleryPosition}
+            onBack={() => {}}
+            onShare={() => {}}
+            onSave={() => {}}
+          />
+        </View>
+      </View>
+
       <Section title="Listing card, hero">
         <ListingCard {...sampleStay} saved onPress={() => {}} />
       </Section>
@@ -169,6 +205,23 @@ export default function ComponentGalleryScreen() {
         />
       </Section>
 
+      <Section title="Stay pieces">
+        <View style={styles.row}>
+          <StayRating rating={4.9} reviewCount={342} />
+          <StayAmenities labels={['Hot Tub', 'Pet Friendly']} />
+        </View>
+        <StayAmenities labels={['Hot Tub', 'Pet Friendly', 'Fast Wi Fi', 'Forest Views']} />
+        <StayHostRow
+          name="Alex Rivera"
+          avatar={sampleHostAvatar}
+          superhost
+          onPress={() => {}}
+        />
+        <View style={styles.barFrame}>
+          <StayBookingBar pricePerNight={289} onBook={() => {}} />
+        </View>
+      </Section>
+
       <Section title="Profile rows">
         <View style={styles.group}>
           <ProfileRow icon="person-outline" label="Personal info" onPress={() => {}} />
@@ -180,6 +233,14 @@ export default function ComponentGalleryScreen() {
       <Section title="Alerts">
         <Alert tone="success" message="Account created successfully" onDismiss={() => {}} />
         <Alert tone="error" message="Something went wrong. Please try again." onDismiss={() => {}} />
+        <Button label="Open a notice" onPress={() => setNoticeOpen(true)} variant="secondary" />
+        <Notice
+          visible={noticeOpen}
+          title="Booking is coming soon"
+          message="You will be able to book this stay in a later update."
+          dismissLabel="Got it"
+          onClose={() => setNoticeOpen(false)}
+        />
       </Section>
 
       <Section title="Tags">
@@ -218,5 +279,12 @@ const styles = StyleSheet.create({
   },
   group: {
     gap: spacing[1],
+  },
+  bleed: {
+    marginHorizontal: -layout.screenGutter,
+    overflow: 'hidden',
+  },
+  barFrame: {
+    height: layout.controlHeight + spacing[8],
   },
 });

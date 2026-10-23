@@ -66,6 +66,18 @@ export const layout = {
   controlHeight: 56,
   chipHeight: 44,
   touchTarget: 44,
+  avatarSize: 80,
+  promptBarHeight: 64,
+  heroCardAspect: 1.2,
+  heroCardAction: 52,
+  ratingBadgeHeight: 32,
+  heroSearchButton: 80,
+  /** Stay detail values, estimated from `property-details.png`. */
+  galleryAspect: 1.27,
+  galleryAction: 56,
+  ratingBoxWidth: 88,
+  ratingBoxHeight: 72,
+  hostAvatarSize: 64,
 } as const;
 
 export const opacity = {
