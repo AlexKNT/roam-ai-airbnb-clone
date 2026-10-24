@@ -24,7 +24,11 @@ export default function HomeScreen() {
     posthogLogger.info('home_screen_displayed', { screen: 'home' });
   }, []);
 
-  const openSearch = () => router.navigate('/search');
+  const openSearch = () =>
+    router.navigate({
+      pathname: '/search',
+      params: { focus: String(Date.now()) },
+    });
   const ready = stays.status === 'ready';
 
   return (

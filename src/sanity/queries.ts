@@ -1,8 +1,12 @@
 import { amenityLabelsFor } from '@/constants/amenities';
+import { posthogLogger } from '@/config/posthog';
+import type { SearchSort, StaySearchParams } from '@/search/types';
 
 import { requireSanityClient } from './client';
 import {
+  scoredStaySearchQuery,
   stayDetailQuery,
+  staySearchQuery,
   staysByTypeQuery,
   staysQuery,
   type StayDetailRow,
@@ -111,4 +115,46 @@ export async function getStayBySlug(slug: string): Promise<StayDetail | null> {
   const row = await client.fetch<StayDetailRow | null>(stayDetailQuery, { slug });
 
   return row ? toStayDetail(row) : null;
+}
+
+let degradeReported = false;
+
+/** One warning per session: the order changed, the guest is not told again. */
+function reportScoringDegrade(error: unknown) {
+  if (degradeReported) return;
+
+  degradeReported = true;
+  posthogLogger.warn('search_scoring_unavailable', {
+    reason: error instanceof Error ? error.name : 'unknown',
+  });
+}
+
+export async function searchStays(
+  params: StaySearchParams,
+  sort: SearchSort,
+): Promise<StaySummary[]> {
+  const client = requireSanityClient();
+  const queryParams = {
+    maxPrice: params.filters.maxPrice ?? null,
+    minGuests: params.filters.minGuests ?? null,
+    type: params.filters.type ?? null,
+    amenities: params.filters.amenities ?? null,
+    petsOnly: params.filters.petsOnly ?? null,
+    place: params.filters.place ?? null,
+    softText: params.softText,
+  };
+
+  // A mood word never removes a stay, so a failed scored read falls back once.
+  if (sort === 'best' && params.softText) {
+    try {
+      const rows = await client.fetch<StaySummaryRow[]>(scoredStaySearchQuery, queryParams);
+      return rows.map(toStaySummary);
+    } catch (error) {
+      reportScoringDegrade(error);
+    }
+  }
+
+  const rows = await client.fetch<StaySummaryRow[]>(staySearchQuery(sort), queryParams);
+
+  return rows.map(toStaySummary);
 }

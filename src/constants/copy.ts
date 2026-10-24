@@ -2,7 +2,9 @@ import type { ComponentProps } from 'react';
 import type { Ionicons } from '@expo/vector-icons';
 
 import type { AppIconName } from '@/components/ui/icon';
+import type { SearchSort } from '@/search/types';
 import type { StayType } from '@/sanity/types';
+import { formatPrice } from '@/utils/format';
 
 type IoniconName = ComponentProps<typeof Ionicons>['name'];
 
@@ -27,13 +29,9 @@ export const tabItems: readonly TabItem[] = [
   { route: 'profile', label: 'Profile', icon: 'person-outline', activeIcon: 'person' },
 ];
 
-export type PlaceholderRoute = Exclude<TabRoute, 'index'>;
+export type PlaceholderRoute = Extract<TabRoute, 'trips' | 'profile'>;
 
 export const screenCopy: Record<PlaceholderRoute, { title: string; description: string }> = {
-  search: {
-    title: 'Search stays',
-    description: 'One sentence is enough. Search opens in the next slice of Roam.',
-  },
   trips: {
     title: 'Your trips',
     description: 'Bookings and the stays you save will be waiting for you here.',
@@ -148,4 +146,35 @@ export const homeCopy = {
   emptyTitle: 'Nothing listed here yet',
   emptyDescription: 'No stays of this kind are listed right now. Try another chip.',
   emptyAction: 'Show all stays',
+} as const;
+
+/** The four sort choices, in the order the menu lists them. */
+export const searchSortOptions: readonly { value: SearchSort; label: string }[] = [
+  { value: 'best', label: 'Best match' },
+  { value: 'price-asc', label: 'Price low to high' },
+  { value: 'price-desc', label: 'Price high to low' },
+  { value: 'rating', label: 'Top rated' },
+];
+
+export const searchCopy = {
+  back: 'Go back',
+  placeholder: 'Cabins in California',
+  fieldLabel: 'Describe the stay you want',
+  filters: 'Filters',
+  filtersNoticeTitle: 'Filters are coming soon',
+  filtersNotice: 'For now, describe the stay you want in one sentence and Roam will read it.',
+  noticeDismiss: 'Got it',
+  sortPrefix: 'Sort by',
+  sortLabel: 'Change the sort order',
+  sortMenuLabel: 'Sort stays',
+  sortCloseLabel: 'Close sort options',
+  count: (count: number) => `${count} ${count === 1 ? 'stay' : 'stays'}`,
+  countCapped: '50+ stays',
+  unclear: 'Nothing in that sentence was clear enough to filter on, so every stay is showing.',
+  emptyTitle: 'No stays match every part',
+  emptyDescription: 'Nothing matches all of your sentence. Clear the filters to see every stay again.',
+  emptyAction: 'Clear filters',
+  priceChip: (price: number) => `Under ${formatPrice(price)}`,
+  guestsChip: (guests: number) => `${guests}+ ${guests === 1 ? 'guest' : 'guests'}`,
+  petsChip: 'Pet Friendly',
 } as const;

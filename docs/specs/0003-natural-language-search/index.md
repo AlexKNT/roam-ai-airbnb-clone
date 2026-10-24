@@ -1,7 +1,7 @@
 # 0003. Natural language stay search
 
 **Date**: 2026-10-23
-**Status**: Proposed
+**Status**: In Progress
 
 ## Summary
 

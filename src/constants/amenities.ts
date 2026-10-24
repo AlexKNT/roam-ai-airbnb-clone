@@ -40,6 +40,23 @@ export function amenityLabelsFor(values: readonly string[]): string[] {
     .filter((label): label is string => label !== null);
 }
 
+/**
+ * Words the search parser reads as an amenity, lowercase. Longer phrases are
+ * tried first, so "hot tub" wins before "tub" ever could. `pet-friendly` is
+ * empty on purpose: "pet friendly" is read by the pets rule, not as an amenity.
+ */
+export const amenitySynonyms: Record<Amenity, readonly string[]> = {
+  'hot-tub': ['hot tub', 'hot tubs', 'hottub', 'jacuzzi'],
+  'pet-friendly': [],
+  'fast-wifi': ['fast wifi', 'fast wi fi', 'wifi', 'wi fi', 'internet'],
+  'forest-view': ['forest view', 'forest views', 'forest', 'woods', 'trees'],
+  'ocean-view': ['ocean view', 'ocean views', 'sea view', 'oceanfront', 'ocean'],
+  'mountain-view': ['mountain view', 'mountain views', 'mountains', 'mountain'],
+  pool: ['swimming pool', 'pool'],
+  fireplace: ['fireplace', 'fire place', 'fireside'],
+  'beach-access': ['beach access'],
+};
+
 const amenityIcons: Record<string, AppIconName> = {
   wifi: 'wifi',
   'fast wi fi': 'wifi',

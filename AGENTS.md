@@ -37,7 +37,7 @@ This file is the project's memory: it holds every decision that is still true. P
 
 ## Build approach
 
-`<TBD, set by /scope>`
+Tracer Bullet: every feature runs end to end through Sanity and an API route before the next one starts.
 
 ## Commands
 
@@ -146,3 +146,7 @@ EAS builds, signs and submits the app in the cloud and ships over the air update
 The project is not linked to EAS yet: there is no `eas.json`.
 
 Docs: https://docs.expo.dev/eas/index.md
+
+## Context files
+
+- [src/search/AGENTS.md](src/search/AGENTS.md): the search parser's vocabulary, rules and read path.

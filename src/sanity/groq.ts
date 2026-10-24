@@ -1,3 +1,5 @@
+import type { SearchSort } from '@/search/types';
+
 export type SanityImageRow = {
   ref: string | null;
   alt: string | null;
@@ -76,5 +78,38 @@ export const staysQuery = `*[_type == "stay"] | order(rating desc, lower(name) a
 }`;
 
 export const staysByTypeQuery = `*[_type == "stay" && type == $type] | order(rating desc, lower(name) asc, _id asc)${listOrder}{
+  ${summaryFields}
+}`;
+
+/**
+ * Hard constraints, all as parameters. A value that is not set arrives as null,
+ * so the guard keeps that clause out of the way instead of excluding rows.
+ */
+const searchFilter = `_type == "stay"
+  && (!defined($maxPrice) || pricePerNight <= $maxPrice)
+  && (!defined($minGuests) || guests >= $minGuests)
+  && (!defined($type) || type == $type)
+  && (!defined($amenities) || count((amenities)[@ in $amenities]) == count($amenities))
+  && (!defined($petsOnly) || !$petsOnly || petsAllowed == true)
+  && (!defined($place) || lower(city) == $place || lower(region) == $place)`;
+
+const searchOrder: Record<SearchSort, string> = {
+  best: 'order(rating desc, lower(name) asc, _id asc)',
+  'price-asc': 'order(pricePerNight asc, lower(name) asc, _id asc)',
+  'price-desc': 'order(pricePerNight desc, lower(name) asc, _id asc)',
+  rating: 'order(rating desc, lower(name) asc, _id asc)',
+};
+
+export const SEARCH_RESULT_LIMIT = 50;
+
+/** Only the sort name picks a constant order clause; no guest text reaches this string. */
+export function staySearchQuery(sort: SearchSort): string {
+  return `*[${searchFilter}] | ${searchOrder[sort]} ${listOrder}{
+  ${summaryFields}
+}`;
+}
+
+/** Best match with mood text: embeddings rank, then the usual rating order settles ties. */
+export const scoredStaySearchQuery = `*[${searchFilter}] | score(text::semanticSimilarity($softText)) | order(_score desc, rating desc, lower(name) asc) ${listOrder}{
   ${summaryFields}
 }`;
