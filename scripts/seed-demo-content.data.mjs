@@ -409,3 +409,29 @@ export const stays = [
     houseRules: 'peaceful',
   },
 ];
+
+// Roam owns these policies rather than the stay, so the chat can answer subjects
+// no property document holds. `topic` must match a catalog id in src/chat/topics.ts.
+export const roamPolicies = [
+  {
+    key: 'refunds-and-deposits',
+    topic: 'refunds-and-deposits',
+    title: 'Roam refunds and deposits',
+    summary: 'Deposits are refunded within 48 hours of check out unless damage is reported.',
+    body: 'Roam holds a refundable deposit for every booking and releases it 48 hours after check out. If a host reports damage with photos inside that window, Roam reviews the report and may keep the part that covers the repair. A refund Roam grants settles to the original payment method within five to seven business days. Guests can always ask for the reason behind a deduction and answer it before the deposit is released.',
+  },
+  {
+    key: 'identification-at-check-in',
+    topic: 'identification-at-check-in',
+    title: 'Identification at check in',
+    summary: 'The lead guest shows a photo identity document and a card in their own name.',
+    body: 'The lead guest presents a photo identity document at check in, such as a passport or a national identity card, and gives it to the host only for the check in itself. The name on the document has to match the name on the booking. The card used to pay has to be in the lead guest name as well. Hosts never keep a copy of the document.',
+  },
+  {
+    key: 'payment-and-fees',
+    topic: 'payment-and-fees',
+    title: 'Payment and fees',
+    summary: 'Roam charges the stay total at booking and shows every fee before payment.',
+    body: 'Roam charges the full stay total when the booking is confirmed, on the payment method the guest entered. The price shown before payment lists the nightly total, the cleaning fee, the Roam service fee and any local tax, so nothing is added afterwards. A card that fails at booking holds the dates for 15 minutes. Guests never pay the host directly, and a host who asks for an off app payment breaks the Roam terms.',
+  },
+];

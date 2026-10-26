@@ -23,7 +23,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 4 | Home feed | Slice 1 · Browse | in-progress |
 | 5 | Stay detail | Slice 1 · Browse | in-progress |
 | 6 | Natural language search | Slice 2 · Search | in-progress |
-| 7 | Grounded policy chat | Slice 3 · Chat | planned |
+| 7 | Grounded policy chat | Slice 3 · Chat | in-progress |
 | 8 | Saved stays | Slice 4 · Saving | planned |
 | 9 | Profile & account | Slice 5 · Account | planned |
 | 10 | Onboarding | Slice 6 · First run | planned |
@@ -103,10 +103,18 @@ Type one sentence and get ranked stays back, with hard constraints as filters an
 
 ## Slice 3 · Chat
 
-### 7. Grounded policy chat · needs a decision · Beta
+### 7. Grounded policy chat · Beta
 Ask about cancellation, house rules, pets or check in and read the stay's own answer, word for word, with its source.
 **Done when:** answers come only from the stay's data and Roam's policies, every answer shows its source, and a question nothing answers says so and points to support.
-- [ ] Design it (spec): `/architect grounded policy chat`
+- [x] Design it (spec): `/architect grounded policy chat` · spec [0004](../specs/0004-grounded-policy-chat/index.md)
+- [x] Build it: `/develop grounded policy chat` · code in `src/chat/`, `src/app/api/policy-chat+api.ts`, `src/app/stay/[slug]/`, `src/components/chat/`, `studio/schemaTypes/roam-policy.ts`
+  - [x] Thread start: topic catalog, API route and chat screen on real stay text (AC-1, AC-3, AC-4, AC-5, AC-19)
+  - [x] Full catalog, starters, answer assembly, unavailable and no answer states (AC-2, AC-6, AC-11, AC-16)
+  - [x] Jev matching and the keyword fallback (AC-6, AC-7, AC-8)
+  - [x] Thread state, caps, rate limit, analytics and accessibility (AC-9, AC-10, AC-12, AC-13, AC-14, AC-15)
+  - [x] Roam policy content, jest tests, design match and checks (AC-17, AC-18, AC-2, AC-19)
+- [ ] Verify it: `/check verify grounded policy chat`
+- [ ] Test it: `/test grounded policy chat`
 
 ## Slice 4 · Saving
 

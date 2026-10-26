@@ -13,6 +13,9 @@ export const brand = {
   tagline: 'Find unforgettable stays for every kind of trip.',
 } as const;
 
+/** Where a guest is pointed when the chat cannot answer and support can. */
+export const supportEmail = 'support@roam.app';
+
 export type TabRoute = 'index' | 'search' | 'trips' | 'profile';
 
 export type TabItem = {
@@ -83,8 +86,6 @@ export const stayDetailCopy = {
   amenities: 'Amenities',
   policyChatTitle: 'Ask about policies',
   policyChatDescription: 'Cancellation, house rules, pets, check in and more.',
-  policyChatNoticeTitle: 'Policy chat is coming soon',
-  policyChatNotice: 'Soon you can ask this stay about cancellation, house rules, pets and check in.',
   hostedBy: (name: string) => `Hosted by ${name}`,
   hostAvatar: (name: string) => `${name}, your host`,
   superhost: 'Superhost',
@@ -178,3 +179,38 @@ export const searchCopy = {
   guestsChip: (guests: number) => `${guests}+ ${guests === 1 ? 'guest' : 'guests'}`,
   petsChip: 'Pet Friendly',
 } as const;
+
+/** Every string the policy chat shows, so the screen holds no copy of its own. */
+export const policyChatCopy = {
+  back: 'Go back',
+  headerLabel: 'Ask about policies',
+  loading: 'Opening this conversation.',
+  startersTitle: 'Try asking',
+  emptyTitle: 'Ask about this stay',
+  emptyDescription:
+    'Answers show this stay’s own text and Roam’s policies, word for word, with where each came from.',
+  fieldLabel: 'Ask a question about this stay',
+  placeholder: 'Ask about cancellation, pets or check in',
+  send: 'Send question',
+  thinking: 'Checking this stay',
+  failed: 'That question did not send. Check your connection and try again.',
+  retry: 'Try again',
+  rateLimited: 'Too many questions in a minute. Wait a moment, then ask again.',
+  unavailableNote: 'This stay does not cover this topic.',
+  noAnswerTitle: 'Nothing here covers that',
+  noAnswerBody: 'This stay and Roam policies have no text that answers that question.',
+  suggestion: (title: string) => `Closest topic: ${title}.`,
+  support: (email: string) => `Ask support at ${email}.`,
+  capReached: (email: string) =>
+    `This conversation reached 25 questions. Open it again in a new session, or email ${email}.`,
+  lengthStop: (length: number, max: number) => `${length} of ${max} characters`,
+  degraded: 'Topic matching was unavailable, so this came from a keyword match.',
+  sourcePrefix: 'Source',
+  answerLabel: (title: string, body: string, source: string) =>
+    `${title}. ${body} ${policyChatSourceLabel(source)}`,
+  turnLabel: (question: string) => `You asked: ${question}`,
+} as const;
+
+export function policyChatSourceLabel(source: string) {
+  return `Source: ${source}`;
+}

@@ -158,9 +158,7 @@ export default function StayScreen() {
               icon="chatbubble-ellipses-outline"
               title={stayDetailCopy.policyChatTitle}
               description={stayDetailCopy.policyChatDescription}
-              onPress={() =>
-                showNotice(stayDetailCopy.policyChatNoticeTitle, stayDetailCopy.policyChatNotice)
-              }
+              onPress={() => router.push({ pathname: '/stay/[slug]/chat', params: { slug } })}
             />
 
             {policy ? (

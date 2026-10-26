@@ -1,44 +1,14 @@
 import type { AppIconName } from '@/components/ui/icon';
 
-export const amenityValues = [
-  'hot-tub',
-  'pet-friendly',
-  'fast-wifi',
-  'forest-view',
-  'ocean-view',
-  'mountain-view',
-  'pool',
-  'fireplace',
-  'beach-access',
-] as const;
+import { type Amenity } from './amenity-labels';
 
-export type Amenity = (typeof amenityValues)[number];
-
-export const amenityLabels: Record<Amenity, string> = {
-  'hot-tub': 'Hot Tub',
-  'pet-friendly': 'Pet Friendly',
-  'fast-wifi': 'Fast Wi Fi',
-  'forest-view': 'Forest Views',
-  'ocean-view': 'Ocean View',
-  'mountain-view': 'Mountain Views',
-  pool: 'Pool',
-  fireplace: 'Fireplace',
-  'beach-access': 'Beach Access',
-};
-
-export function amenityLabel(value: string): string | null {
-  if (!Object.prototype.hasOwnProperty.call(amenityLabels, value)) {
-    return null;
-  }
-
-  return amenityLabels[value as Amenity];
-}
-
-export function amenityLabelsFor(values: readonly string[]): string[] {
-  return values
-    .map((value) => amenityLabel(value))
-    .filter((label): label is string => label !== null);
-}
+export {
+  amenityLabel,
+  amenityLabels,
+  amenityLabelsFor,
+  amenityValues,
+  type Amenity,
+} from './amenity-labels';
 
 /**
  * Words the search parser reads as an amenity, lowercase. Longer phrases are

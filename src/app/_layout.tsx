@@ -9,6 +9,7 @@ import { useEffect } from 'react';
 import { Platform } from 'react-native';
 
 import { ClerkAnalytics } from '@/components/clerk-analytics';
+import { PolicyChatSessionReset } from '@/chat/session-reset';
 import { posthog, posthogLogger } from '@/config/posthog';
 import { color, fontFamily } from '@/theme';
 
@@ -81,6 +82,7 @@ export default function RootLayout() {
   return (
     <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
       <ClerkAnalytics />
+      <PolicyChatSessionReset />
       {posthog ? <PostHogProvider client={posthog}>{app}</PostHogProvider> : app}
     </ClerkProvider>
   );

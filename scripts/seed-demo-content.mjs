@@ -15,6 +15,7 @@ import {
   cancellationPolicies,
   hosts,
   houseRuleSets,
+  roamPolicies,
   stayTypes,
   stays,
 } from './seed-demo-content.data.mjs';
@@ -36,6 +37,10 @@ function cancellationPolicyId(key) {
 
 function houseRulesId(key) {
   return `houseRules-${key}`;
+}
+
+function roamPolicyId(key) {
+  return `roamPolicy-${key}`;
 }
 
 function stayId(slug) {
@@ -195,6 +200,26 @@ function validateDemoContent() {
     }
   }
 
+  const policyTopics = new Set();
+
+  for (const policy of roamPolicies) {
+    const where = `roam policy "${policy.key}"`;
+
+    if (!policy.title || !policy.summary || !policy.body) {
+      problems.push(`${where}: title, summary and body are required`);
+    }
+
+    if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(policy.topic)) {
+      problems.push(`${where}: topic must be lowercase kebab case`);
+    }
+
+    if (policyTopics.has(policy.topic)) {
+      problems.push(`${where}: topic "${policy.topic}" is used twice`);
+    }
+
+    policyTopics.add(policy.topic);
+  }
+
   return problems;
 }
 
@@ -207,7 +232,8 @@ if (problems.length) {
 if (dryRun) {
   const counts = stayTypes.map((type) => `${stays.filter((stay) => stay.type === type).length} ${type}`);
   console.log(`Dry run, nothing written. ${stays.length} stays (${counts.join(', ')}), ${hosts.length} hosts, ` +
-    `${cancellationPolicies.length} cancellation policies, ${houseRuleSets.length} house rule sets.`);
+    `${cancellationPolicies.length} cancellation policies, ${houseRuleSets.length} house rule sets, ` +
+    `${roamPolicies.length} Roam policies.`);
   process.exit(0);
 }
 
@@ -346,6 +372,17 @@ async function buildDocuments() {
     });
   }
 
+  for (const policy of roamPolicies) {
+    documents.push({
+      _id: roamPolicyId(policy.key),
+      _type: 'roamPolicy',
+      title: policy.title,
+      summary: policy.summary,
+      body: policy.body,
+      topic: policy.topic,
+    });
+  }
+
   for (const host of hosts) {
     documents.push({
       _id: hostId(host.key),
@@ -417,7 +454,10 @@ async function verifySeed(documents) {
       "cancellationPolicyTitle": cancellationPolicy->title,
       "houseRuleSetName": houseRules->name,
       "galleryCount": count(gallery[]),
-      "amenityCount": count(amenities)
+      "amenityCount": count(amenities),
+      "topic": topic,
+      "title": title,
+      "bodyLength": length(body)
     }`,
     { ids },
   );
@@ -470,6 +510,26 @@ async function verifySeed(documents) {
     }
   }
 
+  for (const policy of roamPolicies) {
+    const row = byId.get(roamPolicyId(policy.key));
+
+    if (!row) {
+      continue;
+    }
+
+    if (row.topic !== policy.topic) {
+      failures.push(`${row._id}: topic reads back as "${row.topic}"`);
+    }
+
+    if (!row.title) {
+      failures.push(`${row._id}: title is empty`);
+    }
+
+    if ((row.bodyLength ?? 0) < 1) {
+      failures.push(`${row._id}: body is empty`);
+    }
+  }
+
   return failures;
 }
 
@@ -498,9 +558,9 @@ async function main() {
 
   console.log(
     `Seeded ${stays.length} stays (${counts.join(', ')}), ${hosts.length} hosts, ` +
-      `${cancellationPolicies.length} cancellation policies and ${houseRuleSets.length} house rule sets ` +
-      `into ${projectId}/${dataset}. Every stay reads back with its host, cancellation policy, ` +
-      `house rules, gallery and amenities.`,
+      `${cancellationPolicies.length} cancellation policies, ${houseRuleSets.length} house rule sets and ` +
+      `${roamPolicies.length} Roam policies into ${projectId}/${dataset}. Every stay reads back with its host, ` +
+      `cancellation policy, house rules, gallery and amenities, and every Roam policy reads back with its topic.`,
   );
 }
 
