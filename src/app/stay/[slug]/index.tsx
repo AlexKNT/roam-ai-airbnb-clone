@@ -23,6 +23,8 @@ import { Notice } from '@/components/ui/notice';
 import { PolicyCard } from '@/components/ui/policy-card';
 import { posthogLogger } from '@/config/posthog';
 import { stayCopy, stayDetailCopy } from '@/constants/copy';
+import { useSavedStays } from '@/saved/use-saved-stays';
+import { savedStayScreens } from '@/saved/screens';
 import { useStay } from '@/sanity/use-stay';
 import { color, iconSize, layout, radius, spacing } from '@/theme';
 
@@ -31,6 +33,7 @@ const amenityLimit = 4;
 export default function StayScreen() {
   const { slug } = useLocalSearchParams<{ slug: string }>();
   const stay = useStay(slug);
+  const { isSaved, toggle } = useSavedStays();
   const insets = useSafeAreaInsets();
 
   const [position, setPosition] = useState(0);
@@ -129,7 +132,8 @@ export default function StayScreen() {
           onPositionChange={setPosition}
           onBack={goBack}
           onShare={shareStay}
-          onSave={() => showNotice(stayDetailCopy.saveNoticeTitle, stayDetailCopy.saveNotice)}
+          saved={isSaved(detail._id)}
+          onSave={() => toggle(detail._id, savedStayScreens.detail)}
         />
 
         <View style={styles.sheet}>

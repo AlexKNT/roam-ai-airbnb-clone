@@ -177,17 +177,18 @@ export default function ComponentGalleryScreen() {
             onPositionChange={setGalleryPosition}
             onBack={() => {}}
             onShare={() => {}}
+            saved={false}
             onSave={() => {}}
           />
         </View>
       </View>
 
       <Section title="Listing card, hero">
-        <ListingCard {...sampleStay} saved onPress={() => {}} />
+        <ListingCard {...sampleStay} saved onPress={() => {}} onToggleSave={() => {}} />
       </Section>
 
       <Section title="Listing card, row">
-        <ListingCard {...sampleStay} layout="row" onPress={() => {}} />
+        <ListingCard {...sampleStay} layout="row" onPress={() => {}} onToggleSave={() => {}} />
       </Section>
 
       <Section title="Policy cards">

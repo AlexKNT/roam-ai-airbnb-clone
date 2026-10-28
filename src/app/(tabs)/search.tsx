@@ -14,6 +14,8 @@ import { Screen } from '@/components/ui/screen';
 import { SearchField } from '@/components/ui/search-field';
 import { posthogLogger } from '@/config/posthog';
 import { homeCopy, searchCopy, stayCopy } from '@/constants/copy';
+import { savedStayScreens } from '@/saved/screens';
+import { useSavedStays } from '@/saved/use-saved-stays';
 import { trackSearchSubmitted } from '@/search/analytics';
 import { searchChips, withoutConstraint, type SearchChip } from '@/search/chips';
 import { parseStayQuery } from '@/search/parse';
@@ -31,6 +33,7 @@ export default function SearchScreen() {
   const [unclear, setUnclear] = useState(false);
   const [noticeOpen, setNoticeOpen] = useState(false);
   const search = useStaySearch(params, sort, submitNonce);
+  const { isSaved, toggle } = useSavedStays();
 
   useEffect(() => {
     posthogLogger.info('search_screen_displayed', { screen: 'search' });
@@ -156,6 +159,8 @@ export default function SearchScreen() {
                 reviewCount={stay.reviewCount}
                 pricePerNight={stay.pricePerNight}
                 amenities={stay.amenities}
+                saved={isSaved(stay._id)}
+                onToggleSave={() => toggle(stay._id, savedStayScreens.search)}
                 onPress={() =>
                   router.push({ pathname: '/stay/[slug]', params: { slug: stay.slug } })
                 }

@@ -7,6 +7,7 @@ import {
   scoredStaySearchQuery,
   stayDetailQuery,
   staySearchQuery,
+  staysByIdsQuery,
   staysByTypeQuery,
   staysQuery,
   type StayDetailRow,
@@ -115,6 +116,16 @@ export async function getStayBySlug(slug: string): Promise<StayDetail | null> {
   const row = await client.fetch<StayDetailRow | null>(stayDetailQuery, { slug });
 
   return row ? toStayDetail(row) : null;
+}
+
+/** The stays saved by a guest, in no particular order: the caller keeps the save order. */
+export async function getStaysByIds(ids: readonly string[]): Promise<StaySummary[]> {
+  if (ids.length === 0) return [];
+
+  const client = requireSanityClient();
+  const rows = await client.fetch<StaySummaryRow[]>(staysByIdsQuery, { ids });
+
+  return rows.map(toStaySummary);
 }
 
 let degradeReported = false;

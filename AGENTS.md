@@ -56,7 +56,7 @@ cd studio && npm run deploy # deploy Studio; required before Sanity Context work
 ## Environment
 
 - Copy `.env.example` to `.env.local` and fill in values there. `.env` and `.env.*` are ignored by git except `.env.example`.
-- There is no test runner and no CI yet. `npx expo lint` and `npx tsc --noEmit` are the only checks, and both pass on `master`.
+- There is no CI yet. `npx expo lint`, `npx tsc --noEmit` and `npx jest` are the checks, and all three pass on `master`.
 - Lint is ESLint 9 with a flat config in `eslint.config.js`, from `eslint-config-expo`.
 
 ## Expo
@@ -84,6 +84,7 @@ Each tool has one job. Ask before moving a responsibility to a different tool.
 - **Typed decisions** (which stay topics and policies answer a question): Jev, called from API routes through the AI SDK's `experimental_evaluate` with the `@ai-sdk/typesafe-ai` provider and `TYPESAFE_AI_API_KEY`. No Vercel AI Gateway. Keep `ai` and `@ai-sdk/typesafe-ai` pinned to exact versions, since the API is experimental.
 - **Answer text:** none generated. Answers show the stay's own fields and policy text word for word, with their source. No LLM runs in the app.
 - **Analytics:** PostHog, identified through Clerk (`src/components/clerk-analytics.tsx`).
+- **Saved stays:** one `savedStay` document per save in a private Sanity dataset (`SANITY_PRIVATE_DATASET`, ACL `private`), reached only by `src/app/api/saved-stays+api.ts` and keyed by `savedStay.<guestId>.<stayId>`. `src/saved/saved-stays-provider.tsx` holds one list of ids for every heart, Trips and the future Saved count, and `savedStaysCopy` holds its copy.
 
 ## Rules
 

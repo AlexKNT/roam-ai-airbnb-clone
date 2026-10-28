@@ -15,6 +15,9 @@ export type IconButtonProps = {
   size?: number;
   tone?: IconButtonTone;
   shape?: IconButtonShape;
+  /** For a toggle control, so assistive tech reads the current state. */
+  selected?: boolean;
+  iconColor?: string;
   disabled?: boolean;
   style?: StyleProp<ViewStyle>;
 };
@@ -28,6 +31,8 @@ export const IconButton = forwardRef<ComponentRef<typeof Pressable>, IconButtonP
       size = layout.activePill,
       tone = 'surface',
       shape = 'circle',
+      selected,
+      iconColor = color.textPrimary,
       disabled = false,
       style,
     },
@@ -38,7 +43,7 @@ export const IconButton = forwardRef<ComponentRef<typeof Pressable>, IconButtonP
         ref={ref}
         accessibilityRole="button"
         accessibilityLabel={label}
-        accessibilityState={{ disabled }}
+        accessibilityState={{ disabled, selected }}
         disabled={disabled}
         onPress={onPress}
         style={({ pressed }) => [
@@ -53,7 +58,7 @@ export const IconButton = forwardRef<ComponentRef<typeof Pressable>, IconButtonP
           disabled && styles.disabled,
           style,
         ]}>
-        <Icon name={icon} size={size >= layout.controlHeight ? 'lg' : 'sm'} color={color.textPrimary} />
+        <Icon name={icon} size={size >= layout.controlHeight ? 'lg' : 'sm'} color={iconColor} />
       </Pressable>
     );
   },

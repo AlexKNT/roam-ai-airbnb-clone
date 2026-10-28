@@ -24,7 +24,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 5 | Stay detail | Slice 1 · Browse | in-progress |
 | 6 | Natural language search | Slice 2 · Search | in-progress |
 | 7 | Grounded policy chat | Slice 3 · Chat | in-progress |
-| 8 | Saved stays | Slice 4 · Saving | planned |
+| 8 | Saved stays | Slice 4 · Saving | in-progress |
 | 9 | Profile & account | Slice 5 · Account | planned |
 | 10 | Onboarding | Slice 6 · First run | planned |
 | 11 | Auth screens to the design | Slice 6 · First run | planned |
@@ -118,10 +118,16 @@ Ask about cancellation, house rules, pets or check in and read the stay's own an
 
 ## Slice 4 · Saving
 
-### 8. Saved stays · needs a decision
+### 8. Saved stays
 Save a stay from any card or detail screen and find it again in Trips, private to that guest.
 **Done when:** the heart toggles and persists across launches, Trips lists the saved stays with their saved state, the profile Saved count agrees, and private data stays out of the public content dataset.
-- [ ] Design it (spec): `/architect saved stays`
+- [x] Design it (spec): `/architect saved stays` · spec [0005](../specs/0005-saved-stays/index.md)
+- [x] Build it: `/develop saved stays` · code in `src/saved/`, `src/app/api/saved-stays+api.ts`, `src/app/(tabs)/trips.tsx`
+  - [x] Private dataset, route and shared provider (AC-3, AC-7, AC-10, AC-12, AC-13)
+  - [x] Hearts on listing cards and the detail screen (AC-1, AC-2, AC-8, AC-9)
+  - [x] Trips list, its states and orphan pruning (AC-4, AC-5, AC-6, AC-11)
+  - [x] Analytics, tests and checks (AC-14, AC-15)
+- [ ] Verify it: `/check verify saved stays`
 
 ## Slice 5 · Account
 

@@ -32,13 +32,9 @@ export const tabItems: readonly TabItem[] = [
   { route: 'profile', label: 'Profile', icon: 'person-outline', activeIcon: 'person' },
 ];
 
-export type PlaceholderRoute = Extract<TabRoute, 'trips' | 'profile'>;
+export type PlaceholderRoute = Extract<TabRoute, 'profile'>;
 
 export const screenCopy: Record<PlaceholderRoute, { title: string; description: string }> = {
-  trips: {
-    title: 'Your trips',
-    description: 'Bookings and the stays you save will be waiting for you here.',
-  },
   profile: {
     title: 'Your profile',
     description: 'Account details, preferences and sign out land here next.',
@@ -77,7 +73,6 @@ function countOf(count: number, noun: string) {
 export const stayDetailCopy = {
   back: 'Go back',
   share: 'Share this stay',
-  save: 'Save this stay',
   shareMessage: (name: string, place: string) => `${name} in ${place} on Roam`,
   loading: 'Opening this stay.',
   galleryLabel: (position: number, total: number) => `Photo ${position} of ${total}`,
@@ -115,8 +110,23 @@ export const stayDetailCopy = {
   noticeDismiss: 'Got it',
   bookingNoticeTitle: 'Booking is coming soon',
   bookingNotice: 'You will be able to book this stay in a later update.',
-  saveNoticeTitle: 'Saving is coming soon',
-  saveNotice: 'Saved stays arrive in Trips in a later update.',
+} as const;
+
+/** Every string the saved stays surfaces show, so no screen holds copy of its own. */
+export const savedStaysCopy = {
+  saveLabel: 'Save this stay',
+  unsaveLabel: 'Remove this stay from saved',
+  saveFailedTitle: 'Saved stays did not change',
+  saveFailedMessage: 'We could not reach your saved stays. Check your connection and try again.',
+  noticeDismiss: 'Got it',
+  tripsTitle: 'Saved stays',
+  tripsLoading: 'Opening your saved stays.',
+  tripsEmptyTitle: 'No saved stays yet',
+  tripsEmptyDescription: 'Tap the heart on a stay and it will be waiting for you here.',
+  tripsEmptyAction: 'Find a stay',
+  tripsError: 'We could not open your saved stays right now. Check your connection and try again.',
+  tripsRetry: 'Try again',
+  tripsHasMore: 'Showing your 200 newest saves.',
 } as const;
 
 export type StayTypeFilter = {

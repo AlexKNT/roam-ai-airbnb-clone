@@ -78,6 +78,8 @@ export const layout = {
   ratingBoxWidth: 88,
   ratingBoxHeight: 72,
   hostAvatarSize: 64,
+  /** The circled icon above an empty state's copy. */
+  emptyIcon: 72,
 } as const;
 
 export const opacity = {

@@ -12,6 +12,8 @@ import { ListingCard } from '@/components/ui/listing-card';
 import { Screen } from '@/components/ui/screen';
 import { posthogLogger } from '@/config/posthog';
 import { homeCopy, stayCopy, stayTypeFilters } from '@/constants/copy';
+import { savedStayScreens } from '@/saved/screens';
+import { useSavedStays } from '@/saved/use-saved-stays';
 import type { StayType } from '@/sanity/types';
 import { useStays } from '@/sanity/use-stays';
 import { color, spacing } from '@/theme';
@@ -19,6 +21,7 @@ import { color, spacing } from '@/theme';
 export default function HomeScreen() {
   const [selected, setSelected] = useState<StayType | 'all'>('all');
   const stays = useStays(selected === 'all' ? undefined : selected);
+  const { isSaved, toggle } = useSavedStays();
 
   useEffect(() => {
     posthogLogger.info('home_screen_displayed', { screen: 'home' });
@@ -89,6 +92,8 @@ export default function HomeScreen() {
                   title={stay.name}
                   place={stay.place}
                   rating={stay.rating}
+                  saved={isSaved(stay._id)}
+                  onToggleSave={() => toggle(stay._id, savedStayScreens.home)}
                   onPress={() =>
                     router.push({ pathname: '/stay/[slug]', params: { slug: stay.slug } })
                   }

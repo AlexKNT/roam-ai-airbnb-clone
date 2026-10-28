@@ -81,6 +81,11 @@ export const staysByTypeQuery = `*[_type == "stay" && type == $type] | order(rat
   ${summaryFields}
 }`;
 
+/** No order here: Trips keeps the save order the private store returned. */
+export const staysByIdsQuery = `*[_type == "stay" && _id in $ids]{
+  ${summaryFields}
+}`;
+
 /**
  * Hard constraints, all as parameters. A value that is not set arrives as null,
  * so the guard keeps that clause out of the way instead of excluding rows.

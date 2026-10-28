@@ -6,7 +6,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppText } from '@/components/ui/app-text';
 import { Icon } from '@/components/ui/icon';
 import { IconButton } from '@/components/ui/icon-button';
-import { stayDetailCopy } from '@/constants/copy';
+import { stayDetailCopy, savedStaysCopy } from '@/constants/copy';
 import type { StayImage } from '@/sanity/types';
 import { color, elevation, iconSize, layout, radius, spacing } from '@/theme';
 
@@ -19,6 +19,7 @@ export type StayGalleryProps = {
   onPositionChange: (position: number) => void;
   onBack: () => void;
   onShare: () => void;
+  saved: boolean;
   onSave: () => void;
 };
 
@@ -30,6 +31,7 @@ export function StayGallery({
   onPositionChange,
   onBack,
   onShare,
+  saved,
   onSave,
 }: StayGalleryProps) {
   const insets = useSafeAreaInsets();
@@ -101,9 +103,11 @@ export function StayGallery({
             style={styles.action}
           />
           <IconButton
-            icon="heart-outline"
-            label={stayDetailCopy.save}
+            icon={saved ? 'heart' : 'heart-outline'}
+            label={saved ? savedStaysCopy.unsaveLabel : savedStaysCopy.saveLabel}
             size={layout.galleryAction}
+            selected={saved}
+            iconColor={saved ? color.dangerInk : color.textPrimary}
             onPress={onSave}
             style={styles.action}
           />

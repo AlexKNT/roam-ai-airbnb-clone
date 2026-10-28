@@ -7,6 +7,7 @@ import { AppText } from '@/components/ui/app-text';
 import { Icon } from '@/components/ui/icon';
 import { Tag } from '@/components/ui/tag';
 import { amenityIconFor } from '@/constants/amenities';
+import { savedStaysCopy } from '@/constants/copy';
 import { color, iconSize, layout, opacity, radius, spacing } from '@/theme';
 import { formatPrice } from '@/utils/format';
 
@@ -23,6 +24,8 @@ export type ListingCardProps = {
   pricePerNight?: number;
   amenities?: readonly string[];
   saved?: boolean;
+  /** The heart saves this stay. It sits over the card, so a save never opens it. */
+  onToggleSave?: () => void;
   onPress?: () => void;
   layout?: ListingCardLayout;
   style?: StyleProp<ViewStyle>;
@@ -66,6 +69,35 @@ function ImageFallback({ label, style }: { label: string; style?: StyleProp<View
   );
 }
 
+type SaveHeartProps = {
+  saved: boolean;
+  onPress: () => void;
+  size: number;
+  style?: StyleProp<ViewStyle>;
+};
+
+function SaveHeart({ saved, onPress, size, style }: SaveHeartProps) {
+  return (
+    <Pressable
+      accessibilityRole="button"
+      accessibilityLabel={saved ? savedStaysCopy.unsaveLabel : savedStaysCopy.saveLabel}
+      accessibilityState={{ selected: saved }}
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.heart,
+        { width: size, height: size },
+        pressed && styles.pressed,
+        style,
+      ]}>
+      <Icon
+        name={saved ? 'heart' : 'heart-outline'}
+        size={iconSize.sm}
+        color={saved ? color.dangerInk : color.textPrimary}
+      />
+    </Pressable>
+  );
+}
+
 export function ListingCard({
   image,
   imageAlt,
@@ -76,79 +108,139 @@ export function ListingCard({
   pricePerNight,
   amenities = [],
   saved = false,
+  onToggleSave,
   onPress,
-  layout = 'hero',
+  layout: cardLayout = 'hero',
   style,
 }: ListingCardProps) {
-  const row = layout === 'row';
+  const row = cardLayout === 'row';
   const alt = imageAlt ?? title;
   const ratingLabel =
     reviewCount === undefined ? rating.toFixed(1) : `${rating.toFixed(1)} (${reviewCount})`;
 
   if (!row) {
     return (
-      <Pressable
-        accessibilityRole="button"
-        accessibilityLabel={`${title}, ${place}, rated ${rating.toFixed(1)}`}
-        onPress={onPress}
-        style={({ pressed }) => [styles.hero, pressed && styles.pressed, style]}>
-        {image ? (
-          <Image
-            source={{ uri: image }}
-            style={styles.heroImage}
-            contentFit="cover"
-            transition={150}
-            accessibilityLabel={alt}
-          />
-        ) : (
-          <ImageFallback label={alt} style={styles.heroFallback} />
-        )}
+      <View style={style}>
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel={`${title}, ${place}, rated ${rating.toFixed(1)}`}
+          onPress={onPress}
+          style={({ pressed }) => [styles.hero, pressed && styles.pressed]}>
+          {image ? (
+            <Image
+              source={{ uri: image }}
+              style={styles.heroImage}
+              contentFit="cover"
+              transition={150}
+              accessibilityLabel={alt}
+            />
+          ) : (
+            <ImageFallback label={alt} style={styles.heroFallback} />
+          )}
 
-        {image ? <PhotoScrim /> : null}
+          {image ? <PhotoScrim /> : null}
 
-        <View style={styles.ratingBadge}>
-          <Icon name="star" size={iconSize.sm} color={color.primary} />
-          <AppText variant="caption">{rating.toFixed(1)}</AppText>
-        </View>
+          <View style={styles.ratingBadge}>
+            <Icon name="star" size={iconSize.sm} color={color.primary} />
+            <AppText variant="caption">{rating.toFixed(1)}</AppText>
+          </View>
 
-        <View style={styles.heroCopy}>
-          <View style={styles.metaRow}>
-            <Icon name="location-outline" size={iconSize.sm} color={color.surface} />
-            <AppText variant="caption" numberOfLines={1} style={styles.onPhoto}>
-              {place}
+          <View style={styles.heroCopy}>
+            <View style={styles.metaRow}>
+              <Icon name="location-outline" size={iconSize.sm} color={color.surface} />
+              <AppText variant="caption" numberOfLines={1} style={styles.onPhoto}>
+                {place}
+              </AppText>
+            </View>
+            <AppText variant="heading" numberOfLines={2} style={styles.onPhoto}>
+              {title}
             </AppText>
           </View>
-          <AppText variant="heading" numberOfLines={2} style={styles.onPhoto}>
-            {title}
-          </AppText>
-        </View>
 
-        <View style={styles.heroAction}>
-          <Icon name="arrow-top-right" size={iconSize.md} color={color.textPrimary} />
-        </View>
-      </Pressable>
+          <View style={styles.heroAction}>
+            <Icon name="arrow-top-right" size={iconSize.md} color={color.textPrimary} />
+          </View>
+        </Pressable>
+
+        {onToggleSave ? (
+          <SaveHeart
+            saved={saved}
+            onPress={onToggleSave}
+            size={layout.heroCardAction}
+            style={styles.heroHeart}
+          />
+        ) : null}
+      </View>
     );
   }
 
   return (
-    <Pressable
-      accessibilityRole="button"
-      accessibilityLabel={`${title}, ${place}${pricePerNight === undefined ? '' : `, ${formatPrice(pricePerNight)} per night`}`}
-      accessibilityState={{ selected: saved }}
-      onPress={onPress}
-      style={({ pressed }) => [styles.card, pressed && styles.pressed, style]}>
-      <View style={styles.imageBoxRow}>
-        {image ? (
-          <Image
-            source={{ uri: image }}
-            style={styles.imageRow}
-            contentFit="cover"
-            transition={150}
-            accessibilityLabel={alt}
-          />
-        ) : (
-          <ImageFallback label={alt} style={styles.imageRow} />
-        )}
+    <View style={style}>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel={`${title}, ${place}${pricePerNight === undefined ? '' : `, ${formatPrice(pricePerNight)} per night`}`}
+        onPress={onPress}
+        style={({ pressed }) => [styles.card, pressed && styles.pressed]}>
+        <View style={styles.imageBoxRow}>
+          {image ? (
+            <Image
+              source={{ uri: image }}
+              style={styles.imageRow}
+              contentFit="cover"
+              transition={150}
+              accessibilityLabel={alt}
+            />
+          ) : (
+            <ImageFallback label={alt} style={styles.imageRow} />
+          )}
+        </View>
+
+        <View style={styles.contentRow}>
+          <AppText variant="button" numberOfLines={2}>
+            {title}
+          </AppText>
+
+          <View style={styles.metaRow}>
+            <Icon name="location-outline" size={iconSize.sm} color={color.textSecondary} />
+            <AppText variant="caption" color="textSecondary" numberOfLines={1} style={styles.flex}>
+              {place}
+            </AppText>
+          </View>
+
+          <View style={styles.metaRow}>
+            <Icon name="star" size={iconSize.sm} color={color.primary} />
+            <AppText variant="caption" color="textSecondary">
+              {ratingLabel}
+            </AppText>
+          </View>
+
+          {amenities.length > 0 ? (
+            <View style={styles.amenities}>
+              {amenities.map((amenity) => (
+                <Tag key={amenity} label={amenity} icon={amenityIconFor(amenity)} />
+              ))}
+            </View>
+          ) : null}
+
+          {pricePerNight === undefined ? null : (
+            <View style={styles.priceRow}>
+              <AppText variant="button">{formatPrice(pricePerNight)}</AppText>
+              <AppText variant="caption" color="textSecondary">
+                / night
+              </AppText>
+            </View>
+          )}
+        </View>
+      </Pressable>
+
+      {onToggleSave ? (
+        <SaveHeart
+          saved={saved}
+          onPress={onToggleSave}
+          size={layout.touchTarget}
+          style={styles.rowHeart}
+        />
+      ) : (
         <View style={styles.savedBadge}>
           <Icon
             name={saved ? 'heart' : 'heart-outline'}
@@ -156,45 +248,8 @@ export function ListingCard({
             color={saved ? color.dangerInk : color.textPrimary}
           />
         </View>
-      </View>
-
-      <View style={styles.contentRow}>
-        <AppText variant="button" numberOfLines={2}>
-          {title}
-        </AppText>
-
-        <View style={styles.metaRow}>
-          <Icon name="location-outline" size={iconSize.sm} color={color.textSecondary} />
-          <AppText variant="caption" color="textSecondary" numberOfLines={1} style={styles.flex}>
-            {place}
-          </AppText>
-        </View>
-
-        <View style={styles.metaRow}>
-          <Icon name="star" size={iconSize.sm} color={color.primary} />
-          <AppText variant="caption" color="textSecondary">
-            {ratingLabel}
-          </AppText>
-        </View>
-
-        {amenities.length > 0 ? (
-          <View style={styles.amenities}>
-            {amenities.map((amenity) => (
-              <Tag key={amenity} label={amenity} icon={amenityIconFor(amenity)} />
-            ))}
-          </View>
-        ) : null}
-
-        {pricePerNight === undefined ? null : (
-          <View style={styles.priceRow}>
-            <AppText variant="button">{formatPrice(pricePerNight)}</AppText>
-            <AppText variant="caption" color="textSecondary">
-              / night
-            </AppText>
-          </View>
-        )}
-      </View>
-    </Pressable>
+      )}
+    </View>
   );
 }
 
@@ -246,6 +301,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   card: {
+    flexDirection: 'row',
     backgroundColor: color.surface,
     borderRadius: radius.xl,
     padding: spacing[3],
@@ -273,14 +329,30 @@ const styles = StyleSheet.create({
   },
   savedBadge: {
     position: 'absolute',
-    top: spacing[3],
-    right: spacing[3],
+    top: spacing[6],
+    left: spacing[6],
     width: layout.touchTarget,
     height: layout.touchTarget,
     borderRadius: radius.pill,
     backgroundColor: color.surface,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  heart: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: radius.pill,
+    backgroundColor: color.surface,
+  },
+  heroHeart: {
+    position: 'absolute',
+    top: spacing[3],
+    left: spacing[3],
+  },
+  rowHeart: {
+    position: 'absolute',
+    top: spacing[6],
+    left: spacing[6],
   },
   contentRow: {
     flex: 1,
