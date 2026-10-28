@@ -17,6 +17,8 @@ export type InputProps = {
   value: string;
   onChangeText: (value: string) => void;
   label?: string;
+  /** Overrides the visible label as the spoken name, for a field whose label reads badly. */
+  accessibilityLabel?: string;
   placeholder?: string;
   icon?: AppIconName;
   secure?: boolean;
@@ -36,6 +38,7 @@ export const Input = forwardRef<ComponentRef<typeof TextInput>, InputProps>(func
     value,
     onChangeText,
     label,
+    accessibilityLabel,
     placeholder,
     icon,
     secure = false,
@@ -76,9 +79,11 @@ export const Input = forwardRef<ComponentRef<typeof TextInput>, InputProps>(func
           ref={ref}
           value={value}
           onChangeText={onChangeText}
+          accessibilityLabel={accessibilityLabel ?? label}
           placeholder={placeholder}
           placeholderTextColor={color.textMuted}
           editable={!disabled}
+          accessibilityState={{ disabled }}
           secureTextEntry={secure && !revealed}
           keyboardType={keyboardType}
           autoComplete={autoComplete}

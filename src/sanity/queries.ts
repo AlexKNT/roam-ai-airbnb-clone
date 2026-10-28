@@ -4,12 +4,14 @@ import type { SearchSort, StaySearchParams } from '@/search/types';
 
 import { requireSanityClient } from './client';
 import {
+  roamPoliciesQuery,
   scoredStaySearchQuery,
   stayDetailQuery,
   staySearchQuery,
   staysByIdsQuery,
   staysByTypeQuery,
   staysQuery,
+  type RoamPolicyRow,
   type StayDetailRow,
   type StaySummaryRow,
 } from './groq';
@@ -18,6 +20,7 @@ import type {
   CancellationPolicy,
   Host,
   HouseRules,
+  RoamPolicy,
   StayDetail,
   StayImage,
   StaySummary,
@@ -128,8 +131,21 @@ export async function getStaysByIds(ids: readonly string[]): Promise<StaySummary
   return rows.map(toStaySummary);
 }
 
-let degradeReported = false;
+/** Published Roam policies in title order: the Policies screen prints them word for word. */
+export async function getRoamPolicies(): Promise<RoamPolicy[]> {
+  const client = requireSanityClient();
+  const rows = await client.fetch<RoamPolicyRow[]>(roamPoliciesQuery);
 
+  return rows.map((row) => ({
+    _id: row._id,
+    title: row.title,
+    summary: row.summary,
+    body: row.body,
+    topic: row.topic ?? null,
+  }));
+}
+
+let degradeReported = false;
 /** One warning per session: the order changed, the guest is not told again. */
 function reportScoringDegrade(error: unknown) {
   if (degradeReported) return;

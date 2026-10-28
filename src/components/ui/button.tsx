@@ -5,7 +5,7 @@ import { AppText } from '@/components/ui/app-text';
 import { Icon, type AppIconName } from '@/components/ui/icon';
 import { color, layout, opacity, radius, spacing } from '@/theme';
 
-export type ButtonVariant = 'primary' | 'secondary';
+export type ButtonVariant = 'primary' | 'secondary' | 'danger';
 
 export type ButtonProps = {
   label: string;
@@ -23,7 +23,8 @@ export const Button = forwardRef<ComponentRef<typeof View>, ButtonProps>(functio
 ) {
   const inactive = disabled || loading;
   const primary = variant === 'primary';
-  const ink = primary ? color.darkInk : color.textPrimary;
+  const ink =
+    variant === 'danger' ? color.surface : primary ? color.darkInk : color.textPrimary;
 
   return (
     <Pressable
@@ -35,7 +36,7 @@ export const Button = forwardRef<ComponentRef<typeof View>, ButtonProps>(functio
       onPress={onPress}
       style={({ pressed }) => [
         styles.base,
-        primary ? styles.primary : styles.secondary,
+        primary ? styles.primary : variant === 'danger' ? styles.danger : styles.secondary,
         pressed && styles.pressed,
         inactive && styles.inactive,
         style,
@@ -77,6 +78,9 @@ const styles = StyleSheet.create({
     backgroundColor: color.surface,
     borderWidth: 1,
     borderColor: color.border,
+  },
+  danger: {
+    backgroundColor: color.dangerInk,
   },
   pressed: {
     opacity: opacity.pressed,

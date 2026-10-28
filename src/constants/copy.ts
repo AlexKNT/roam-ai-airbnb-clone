@@ -32,15 +32,6 @@ export const tabItems: readonly TabItem[] = [
   { route: 'profile', label: 'Profile', icon: 'person-outline', activeIcon: 'person' },
 ];
 
-export type PlaceholderRoute = Extract<TabRoute, 'profile'>;
-
-export const screenCopy: Record<PlaceholderRoute, { title: string; description: string }> = {
-  profile: {
-    title: 'Your profile',
-    description: 'Account details, preferences and sign out land here next.',
-  },
-};
-
 export const signInCopy = {
   heading: 'Sign in to Roam',
   description: 'Sign in, or create an account with your email.',
@@ -127,6 +118,83 @@ export const savedStaysCopy = {
   tripsError: 'We could not open your saved stays right now. Check your connection and try again.',
   tripsRetry: 'Try again',
   tripsHasMore: 'Showing your 200 newest saves.',
+} as const;
+
+/** Every string the Profile tab shows, so the screen holds no copy of its own. */
+export const profileCopy = {
+  logoLabel: 'Roam',
+  settingsLabel: 'Open settings',
+  avatarLabel: 'Your profile photo',
+  nameFallback: 'Roam guest',
+  badge: 'Roam Explorer',
+  statsTrips: 'Trips',
+  statsSaved: 'Saved',
+  statUnavailable: '—',
+  savedRetry: 'Retry',
+  savedRetryLabel: 'Retry the saved stays count',
+  accountGroup: 'Account',
+  preferencesGroup: 'Preferences',
+  personalInfo: 'Personal info',
+  paymentMethods: 'Payment methods',
+  trips: 'Trips',
+  notifications: 'Notifications',
+  helpSupport: 'Help & support',
+  noticeDismiss: 'Got it',
+  laterTitle: 'Coming in a later update',
+  paymentMethodsNotice: 'Payment methods arrive with booking in a later update.',
+  notificationsNotice: 'Notification settings arrive in a later update.',
+  cancellationTitle: 'Free cancellation',
+  cancellationDescription: 'Full refund up to 7 days before check-in.',
+  policiesLabel: 'Read Roam policies',
+  mailSubject: 'Roam support',
+  mailUnavailableTitle: 'No mail app found',
+  mailUnavailableMessage: (email: string) => `Email Roam support at ${email}.`,
+} as const;
+
+export const personalInfoCopy = {
+  title: 'Personal info',
+  firstName: 'First name',
+  lastName: 'Last name',
+  place: 'Place',
+  placePlaceholder: 'San Francisco, CA',
+  email: 'Email',
+  emailHelper: 'Your email signs you in, so it cannot be changed here.',
+  save: 'Save changes',
+  firstNameRequired: 'Enter your first name.',
+  nameTooLong: 'Keep this to 50 characters or fewer.',
+  placeTooLong: 'Keep your place to 60 characters or fewer.',
+  placeOneLine: 'Keep your place on one line.',
+  saveFailed: 'We could not save your changes. Check your connection and try again.',
+} as const;
+
+export const settingsCopy = {
+  title: 'Settings',
+  signOut: 'Sign out',
+  deleteAccount: 'Delete account',
+  version: (version: string) => `Version ${version}`,
+  signOutTitle: 'Sign out of Roam?',
+  signOutMessage: 'You can sign back in any time with your email.',
+  signOutCancel: 'Stay signed in',
+  signOutConfirm: 'Sign out',
+  deleteTitle: 'Delete your account?',
+  deleteMessage: 'This removes your account and every stay you saved. It cannot be undone.',
+  deleteCancel: 'Keep my account',
+  deleteConfirm: 'Delete account',
+  deleteFailedTitle: 'Your saved stays are gone',
+  deleteFailedMessage:
+    'We removed your saved stays but could not close your account, and those saves cannot be restored. Try again to finish deleting the account.',
+  deleteFailedDismiss: 'Not now',
+  deleteRetry: 'Try again',
+} as const;
+
+export const policiesCopy = {
+  title: 'Policies',
+  loading: 'Loading Roam policies.',
+  error: 'We could not load Roam policies right now. Check your connection and try again.',
+  retry: 'Try again',
+  emptyTitle: 'No policies yet',
+  emptyDescription: 'Roam policies appear here once they are published.',
+  source: (topic: string | null) => (topic ? `Roam policy · ${topic}` : 'Roam policy'),
 } as const;
 
 export type StayTypeFilter = {

@@ -24,6 +24,15 @@ export type HouseRules = {
   rules: string[];
 };
 
+/** Policy wording Roam owns, printed word for word by the chat and the Policies screen. */
+export type RoamPolicy = {
+  _id: string;
+  title: string;
+  summary: string;
+  body: string;
+  topic: string | null;
+};
+
 export type StaySummary = {
   _id: string;
   slug: string;

@@ -21,6 +21,7 @@ function store(overrides: Partial<SavedStayStore> = {}): SavedStayStore {
     create: jest.fn().mockResolvedValue('2026-10-01T10:00:00.000Z'),
     remove: jest.fn().mockResolvedValue(undefined),
     removeMany: jest.fn().mockResolvedValue(undefined),
+    removeAll: jest.fn().mockResolvedValue(undefined),
     count: jest.fn().mockResolvedValue(1),
     ...overrides,
   };

@@ -78,6 +78,8 @@ export const layout = {
   ratingBoxWidth: 88,
   ratingBoxHeight: 72,
   hostAvatarSize: 64,
+  /** The larger photo on the Profile identity card, estimated from `profile.png`. */
+  profileAvatarSize: 96,
   /** The circled icon above an empty state's copy. */
   emptyIcon: 72,
 } as const;

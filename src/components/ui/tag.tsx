@@ -10,6 +10,8 @@ export type TagProps = {
   label: string;
   tone?: TagTone;
   icon?: AppIconName;
+  /** The icon takes the badge's own colour by default. */
+  iconColor?: string;
   style?: StyleProp<ViewStyle>;
 };
 
@@ -21,12 +23,12 @@ const toneSurface: Record<TagTone, string> = {
   sky: color.badgeSky,
 };
 
-export function Tag({ label, tone = 'neutral', icon, style }: TagProps) {
+export function Tag({ label, tone = 'neutral', icon, iconColor, style }: TagProps) {
   const ink = tone === 'neutral' ? color.textSecondary : color.darkInk;
 
   return (
     <View style={[styles.tag, { backgroundColor: toneSurface[tone] }, style]}>
-      {icon ? <Icon name={icon} size="sm" color={ink} /> : null}
+      {icon ? <Icon name={icon} size="sm" color={iconColor ?? ink} /> : null}
       <AppText variant="label" style={{ color: ink }}>
         {label}
       </AppText>

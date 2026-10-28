@@ -25,7 +25,7 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 6 | Natural language search | Slice 2 · Search | in-progress |
 | 7 | Grounded policy chat | Slice 3 · Chat | in-progress |
 | 8 | Saved stays | Slice 4 · Saving | in-progress |
-| 9 | Profile & account | Slice 5 · Account | planned |
+| 9 | Profile & account | Slice 5 · Account | in-progress |
 | 10 | Onboarding | Slice 6 · First run | planned |
 | 11 | Auth screens to the design | Slice 6 · First run | planned |
 
@@ -131,10 +131,17 @@ Save a stay from any card or detail screen and find it again in Trips, private t
 
 ## Slice 5 · Account
 
-### 9. Profile & account · needs a decision
+### 9. Profile & account
 The guest's own screen: identity, counts, account rows, preferences and sign out.
 **Done when:** the profile shows the Clerk name, avatar and place with real Trips and Saved counts, sign out returns to sign in, and account deletion either works safely or is clearly marked unavailable.
-- [ ] Design it (spec): `/architect profile & account`
+- [x] Design it (spec): `/architect profile & account` · spec [0006](../specs/0006-profile-account/index.md)
+- [x] Build it: `/develop profile & account` · code in `src/app/(tabs)/profile.tsx`, `src/app/account/`, `src/profile/`, `src/components/profile/`, `src/app/api/account+api.ts`
+  - [x] Profile screen on real data: identity card, two stat columns, Saved states (AC-1, AC-2, AC-3)
+  - [x] Account route group and sign out confirmation (AC-7, AC-8, AC-12)
+  - [x] Personal info edit and the wired rows (AC-4, AC-5)
+  - [x] Policies screen from Sanity with its states (AC-6)
+  - [x] Account deletion, analytics and checks (AC-9, AC-10, AC-11, AC-13, AC-14)
+- [ ] Verify it: `/check verify profile & account`
 
 ## Slice 6 · First run
 
@@ -153,6 +160,7 @@ Out of scope for this pass, kept so the plan stays honest.
 - **Booking & payment**: choose dates, validate availability, price on the server, pay with Stripe · needs a decision
 - **Host side**: companies, roles, permissions and property ownership · needs a decision
 - **Payment methods and notifications settings**: profile rows that depend on booking and push · needs a decision
+- **Guest reviews and ratings**: the third profile stat needs a reviews model · needs a decision · from spec 0006
 - **Production release**: EAS builds, keys, store requirements, privacy and terms pages · needs a decision · GA
 - **Design system catalog screen**: internal route showing every token and component · Prototype
 

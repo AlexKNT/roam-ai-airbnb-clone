@@ -1,8 +1,8 @@
-import { Pressable, StyleSheet, type StyleProp, type ViewStyle } from 'react-native';
+import { Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
 import { AppText } from '@/components/ui/app-text';
 import { Icon, type AppIconName } from '@/components/ui/icon';
-import { color, iconSize, layout, opacity, spacing } from '@/theme';
+import { color, iconSize, layout, opacity, radius, spacing } from '@/theme';
 
 export type ProfileRowProps = {
   icon: AppIconName;
@@ -25,11 +25,13 @@ export function ProfileRow({ icon, label, onPress, last = false, style }: Profil
         pressed && styles.pressed,
         style,
       ]}>
-      <Icon name={icon} size={iconSize.sm} color={color.textPrimary} />
+      <View style={styles.iconBubble}>
+        <Icon name={icon} size={iconSize.sm} color={color.textPrimary} />
+      </View>
       <AppText variant="body" style={styles.label}>
         {label}
       </AppText>
-      <Icon name="chevron-forward" size={iconSize.sm} color={color.textSecondary} />
+      <Icon name="chevron-forward" size={iconSize.sm} color={color.textPrimary} />
     </Pressable>
   );
 }
@@ -40,6 +42,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing[3],
+  },
+  iconBubble: {
+    width: layout.touchTarget,
+    height: layout.touchTarget,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: radius.pill,
+    backgroundColor: color.surfaceGray,
   },
   separator: {
     borderBottomWidth: 1,

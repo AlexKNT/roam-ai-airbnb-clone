@@ -5,6 +5,10 @@ export const SAVED_STAYS_WINDOW_MS = 10 * 60 * 1000;
 export const SAVED_STAYS_READ_MAX = 60;
 export const SAVED_STAYS_WRITE_MAX = 30;
 
+/** Account deletion is rare, so five attempts in ten minutes is generous. */
+export const ACCOUNT_DELETE_WINDOW_MS = 10 * 60 * 1000;
+export const ACCOUNT_DELETE_MAX = 5;
+
 /** The map is swept once it holds this many guests, so it cannot grow without bound. */
 const SWEEP_THRESHOLD = 500;
 
@@ -49,3 +53,4 @@ export function createRequestWindow(
 
 export const savedStayReads = createRequestWindow(SAVED_STAYS_READ_MAX, SAVED_STAYS_WINDOW_MS);
 export const savedStayWrites = createRequestWindow(SAVED_STAYS_WRITE_MAX, SAVED_STAYS_WINDOW_MS);
+export const accountDeletes = createRequestWindow(ACCOUNT_DELETE_MAX, ACCOUNT_DELETE_WINDOW_MS);

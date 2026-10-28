@@ -118,3 +118,20 @@ export function staySearchQuery(sort: SearchSort): string {
 export const scoredStaySearchQuery = `*[${searchFilter}] | score(text::semanticSimilarity($softText)) | order(_score desc, rating desc, lower(name) asc) ${listOrder}{
   ${summaryFields}
 }`;
+
+export type RoamPolicyRow = {
+  _id: string;
+  title: string;
+  summary: string;
+  body: string;
+  topic: string | null;
+};
+
+/** Every Roam policy in title order, the way the Policies screen lists them. */
+export const roamPoliciesQuery = `*[_type == "roamPolicy"] | order(title asc){
+  _id,
+  title,
+  summary,
+  body,
+  topic
+}`;

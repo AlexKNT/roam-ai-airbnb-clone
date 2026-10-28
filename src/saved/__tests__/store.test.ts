@@ -103,4 +103,15 @@ describe('createSavedStayStore removal', () => {
 
     expect(raw.transaction).not.toHaveBeenCalled();
   });
+
+  it('deletes every save for the guest in one query mutation', async () => {
+    const { client, raw } = fakeClient();
+
+    await createSavedStayStore(client).removeAll('user_1');
+
+    expect(raw.delete).toHaveBeenCalledWith({
+      query: '*[_type == "savedStay" && guestId == $guestId]',
+      params: { guestId: 'user_1' },
+    });
+  });
 });

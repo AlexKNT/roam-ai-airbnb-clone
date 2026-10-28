@@ -22,6 +22,8 @@ export type SavedStayStore = {
   create: (guestId: string, stayId: string) => Promise<string>;
   remove: (guestId: string, stayId: string) => Promise<void>;
   removeMany: (guestId: string, stayIds: readonly string[]) => Promise<void>;
+  /** Deletes every save the guest holds in one mutation, however the read was capped. */
+  removeAll: (guestId: string) => Promise<void>;
   count: (guestId: string) => Promise<number>;
 };
 
@@ -31,6 +33,8 @@ const readQuery = `{
 }`;
 
 const countQuery = `count(*[_type == "savedStay" && guestId == $guestId])`;
+
+const removeAllQuery = `*[_type == "savedStay" && guestId == $guestId]`;
 
 export function createSavedStayStore(client: SanityClient): SavedStayStore {
   return {
@@ -73,6 +77,10 @@ export function createSavedStayStore(client: SanityClient): SavedStayStore {
       for (const stayId of stayIds) transaction.delete(savedStayId(guestId, stayId));
 
       await transaction.commit();
+    },
+
+    async removeAll(guestId) {
+      await client.delete({ query: removeAllQuery, params: { guestId } });
     },
 
     async count(guestId) {
