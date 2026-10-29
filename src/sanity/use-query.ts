@@ -19,6 +19,8 @@ type UseSanityQueryOptions<T> = {
   enabled?: boolean;
   initialData: T;
   load: () => Promise<T>;
+  /** The copy a failed read shows: singular for one stay, plural for a list. */
+  errorMessage?: string;
 };
 
 type Snapshot<T> = {
@@ -29,7 +31,7 @@ type Snapshot<T> = {
   error: string | null;
 };
 
-function describeError(error: unknown): string {
+function describeError(error: unknown, fallback: string): string {
   if (error instanceof SanityConfigurationError) {
     return stayCopy.configurationError;
   }
@@ -38,7 +40,7 @@ function describeError(error: unknown): string {
     return stayCopy.configurationError;
   }
 
-  return stayCopy.loadError;
+  return fallback;
 }
 
 export function useSanityQuery<T>({
@@ -46,6 +48,7 @@ export function useSanityQuery<T>({
   enabled = true,
   initialData,
   load,
+  errorMessage = stayCopy.loadError,
 }: UseSanityQueryOptions<T>): QueryState<T> {
   const [attempt, setAttempt] = useState(0);
   const [snapshot, setSnapshot] = useState<Snapshot<T>>({
@@ -73,13 +76,13 @@ export function useSanityQuery<T>({
     load().then(
       (data) => settle({ status: 'ready', data, error: null }),
       (error: unknown) =>
-        settle({ status: 'error', data: initialData, error: describeError(error) }),
+        settle({ status: 'error', data: initialData, error: describeError(error, errorMessage) }),
     );
 
     return () => {
       requestId.current += 1;
     };
-  }, [queryKey, enabled, attempt, initialData, load]);
+  }, [queryKey, enabled, attempt, initialData, load, errorMessage]);
 
   const retry = useCallback(() => setAttempt((value) => value + 1), []);
 

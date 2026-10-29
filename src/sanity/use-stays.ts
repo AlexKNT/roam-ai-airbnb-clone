@@ -1,5 +1,7 @@
 import { useCallback } from 'react';
 
+import { stayCopy } from '@/constants/copy';
+
 import { getStays } from './queries';
 import type { StaySummary, StayType } from './types';
 import { useSanityQuery, type QueryState } from './use-query';
@@ -15,5 +17,6 @@ export function useStays(type?: StayType): StaysState {
     queryKey: type ?? 'all',
     initialData: EMPTY_STAYS,
     load,
+    errorMessage: stayCopy.listError,
   });
 }

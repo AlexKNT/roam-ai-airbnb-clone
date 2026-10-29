@@ -1,5 +1,6 @@
 import { useCallback, useMemo } from 'react';
 
+import { stayCopy } from '@/constants/copy';
 import type { SearchSort, StaySearchParams } from '@/search/types';
 
 import { searchStays } from './queries';
@@ -40,5 +41,10 @@ export function useStaySearch(
   );
   const load = useCallback(() => searchStays(params, sort), [params, sort]);
 
-  return useSanityQuery({ queryKey, initialData: EMPTY_STAYS, load });
+  return useSanityQuery({
+    queryKey,
+    initialData: EMPTY_STAYS,
+    load,
+    errorMessage: stayCopy.listError,
+  });
 }
