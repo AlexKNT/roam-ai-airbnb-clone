@@ -1,4 +1,4 @@
-import { forwardRef, type ComponentRef } from 'react';
+import { forwardRef, type ComponentRef, type ReactNode } from 'react';
 import { ActivityIndicator, Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
 import { AppText } from '@/components/ui/app-text';
@@ -12,13 +12,27 @@ export type ButtonProps = {
   onPress: () => void;
   variant?: ButtonVariant;
   icon?: AppIconName;
+  /** `edge` pins the icon to the trailing end, as the auth designs show. */
+  iconPlacement?: 'inline' | 'edge';
+  /** A mark that carries its own artwork, such as a provider logo, shown before the label. */
+  leading?: ReactNode;
   disabled?: boolean;
   loading?: boolean;
   style?: StyleProp<ViewStyle>;
 };
 
 export const Button = forwardRef<ComponentRef<typeof View>, ButtonProps>(function Button(
-  { label, onPress, variant = 'primary', icon, disabled = false, loading = false, style },
+  {
+    label,
+    onPress,
+    variant = 'primary',
+    icon,
+    iconPlacement = 'inline',
+    leading,
+    disabled = false,
+    loading = false,
+    style,
+  },
   ref,
 ) {
   const inactive = disabled || loading;
@@ -50,11 +64,18 @@ export const Button = forwardRef<ComponentRef<typeof View>, ButtonProps>(functio
         </>
       ) : (
         <>
-          {icon && !primary ? <Icon name={icon} color={ink} /> : null}
+          {leading ?? (icon && !primary ? <Icon name={icon} color={ink} /> : null)}
           <AppText variant="button" style={{ color: ink }}>
             {label}
           </AppText>
-          {icon && primary ? <Icon name={icon} color={ink} /> : null}
+          {icon && primary && iconPlacement === 'inline' ? (
+            <Icon name={icon} color={ink} />
+          ) : null}
+          {icon && primary && iconPlacement === 'edge' ? (
+            <View style={styles.edgeIcon}>
+              <Icon name={icon} color={ink} />
+            </View>
+          ) : null}
         </>
       )}
     </Pressable>
@@ -87,5 +108,9 @@ const styles = StyleSheet.create({
   },
   inactive: {
     opacity: opacity.disabled,
+  },
+  edgeIcon: {
+    position: 'absolute',
+    right: spacing[5],
   },
 });

@@ -32,20 +32,101 @@ export const tabItems: readonly TabItem[] = [
   { route: 'profile', label: 'Profile', icon: 'person-outline', activeIcon: 'person' },
 ];
 
-export const signInCopy = {
-  heading: 'Sign in to Roam',
-  description: 'Sign in, or create an account with your email.',
-  emailLabel: 'Email address',
-  passwordLabel: 'Password',
-  codeLabel: 'Verification code',
-  codeTitle: 'Check your inbox',
-  codeDescription: (email: string) => `Enter the code we sent to ${email}.`,
-  submit: 'Continue',
-  verify: 'Verify code',
-  resend: 'Resend code',
-  startOver: 'Start over',
-  newAccountNote: 'New to Roam? The same form creates your account.',
+export type OnboardingSlide = {
+  id: string;
+  /** Remote placeholder photography, replaced when real stay photos land. */
+  photo: string;
+  place: string;
+  title: string;
+  body: string;
+};
+
+export const onboardingCopy = {
+  skip: 'Skip',
+  start: 'Get started',
+  slideProgress: 'Slide progress',
+  slides: [
+    {
+      id: 'story',
+      photo: 'https://picsum.photos/id/1018/1200/1600',
+      place: 'Whistler, BC',
+      title: 'Find a stay that fits your story',
+      body: 'From mountain cabins to oceanfront villas, roam helps you find unforgettable stays for every kind of trip.',
+    },
+    {
+      id: 'sentence',
+      photo: 'https://picsum.photos/id/1015/1200/1600',
+      place: 'Lake Tahoe, CA',
+      title: 'Say it in one sentence',
+      body: 'Tell roam the trip you have in mind. Dates, guests and budget come out of your words, and matching stays come back ranked.',
+    },
+    {
+      id: 'answers',
+      photo: 'https://picsum.photos/id/1043/1200/1600',
+      place: 'Joshua Tree, CA',
+      title: 'Ask about any stay',
+      body: 'House rules, deposits and check in times are answered with the host’s own words, so nothing is left to guess.',
+    },
+  ] as readonly OnboardingSlide[],
 } as const;
+
+export const authCopy = {
+  back: 'Go back',
+  or: 'or',
+  continueWithGoogle: 'Continue with Google',
+  continueWithApple: 'Continue with Apple',
+  showPassword: 'Show password',
+  hidePassword: 'Hide password',
+  modes: {
+    'sign-up': {
+      title: 'Create\nyour account',
+      description:
+        'Join roam to save your stays, get personalized recommendations and access them across all your devices.',
+      nameLabel: 'Full name',
+      namePlaceholder: 'e.g. Adrian Hajdin',
+      emailLabel: 'Email address',
+      emailPlaceholder: 'you@example.com',
+      passwordLabel: 'Password',
+      passwordPlaceholder: 'At least 8 characters',
+      submit: 'Create account',
+      switchPrompt: 'Already have an account?',
+      switchAction: 'Sign in',
+    },
+    'sign-in': {
+      title: 'Welcome\nback',
+      description:
+        'Sign in to pick up your saved stays and recommendations, on every device you use.',
+      emailLabel: 'Email address',
+      emailPlaceholder: 'you@example.com',
+      passwordLabel: 'Password',
+      passwordPlaceholder: 'Your password',
+      submit: 'Sign in',
+      switchPrompt: 'New to roam?',
+      switchAction: 'Create account',
+    },
+  },
+  code: {
+    title: 'Check your inbox',
+    description: (email: string) => `Enter the code we sent to ${email}.`,
+    label: 'Verification code',
+    placeholder: '123456',
+    submit: 'Verify code',
+    resend: 'Resend code',
+    startOver: 'Start over',
+  },
+  messages: {
+    missingName: 'Add your name so we know who is coming.',
+    shortPassword: 'Use at least 8 characters for your password.',
+    noAccount: 'We could not find an account for that email. Create one below.',
+    accountExists: 'That email already has an account. Sign in instead.',
+    incomplete: 'Your account needs more information to finish. Contact support.',
+    verifiedIncomplete: 'Email verified, but your account still needs more information.',
+    unsupported: 'This account needs a sign in step Roam does not support yet. Contact support.',
+    ssoFailed: 'We could not finish that sign in. Try again, or use your email and password.',
+  },
+} as const;
+
+export type AuthMode = keyof typeof authCopy.modes;
 
 export const stayCopy = {
   retry: 'Try again',

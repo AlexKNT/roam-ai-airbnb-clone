@@ -82,6 +82,13 @@ export const layout = {
   profileAvatarSize: 96,
   /** The circled icon above an empty state's copy. */
   emptyIcon: 72,
+  /** The main action on the auth screens, measured from `auth.png`. */
+  authActionHeight: 50,
+  /** Onboarding, estimated from `onboarding.png`. */
+  onboardingSheetRadius: 64,
+  onboardingDot: 8,
+  onboardingDotActive: 24,
+  onboardingPinHeight: 40,
 } as const;
 
 export const opacity = {

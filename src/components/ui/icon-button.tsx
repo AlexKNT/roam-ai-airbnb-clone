@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, type StyleProp, type ViewStyle } from 'react-nat
 import { Icon, type AppIconName } from '@/components/ui/icon';
 import { color, layout, opacity, radius } from '@/theme';
 
-export type IconButtonTone = 'surface' | 'plain';
+export type IconButtonTone = 'surface' | 'plain' | 'outline';
 export type IconButtonShape = 'circle' | 'soft';
 
 export type IconButtonProps = {
@@ -54,6 +54,7 @@ export const IconButton = forwardRef<ComponentRef<typeof Pressable>, IconButtonP
             borderRadius: shape === 'circle' ? radius.pill : radius.xl,
           },
           tone === 'surface' && styles.surface,
+          tone === 'outline' && styles.outline,
           pressed && styles.pressed,
           disabled && styles.disabled,
           style,
@@ -71,6 +72,11 @@ const styles = StyleSheet.create({
   },
   surface: {
     backgroundColor: color.surfaceGray,
+  },
+  outline: {
+    backgroundColor: color.surface,
+    borderWidth: 1,
+    borderColor: color.border,
   },
   pressed: {
     opacity: opacity.pressed,

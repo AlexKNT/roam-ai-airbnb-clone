@@ -12,6 +12,8 @@ export type ScreenProps = {
   bottomInset?: 'tabBar' | 'none';
   /** Screens that are not `surfaceGray` name their token here instead of styling a root. */
   background?: ColorToken;
+  /** Lifts the scroll content clear of the keyboard, for a screen whose fields sit low. */
+  keyboardInsets?: boolean;
   style?: StyleProp<ViewStyle>;
   contentContainerStyle?: StyleProp<ViewStyle>;
 };
@@ -29,6 +31,7 @@ export function Screen({
   scroll = true,
   bottomInset = 'tabBar',
   background = 'surfaceGray',
+  keyboardInsets = false,
   style,
   contentContainerStyle,
 }: ScreenProps) {
@@ -47,6 +50,7 @@ export function Screen({
         <ScrollView
           contentContainerStyle={contentStyle}
           keyboardShouldPersistTaps="handled"
+          automaticallyAdjustKeyboardInsets={keyboardInsets}
           showsVerticalScrollIndicator={false}>
           {children}
         </ScrollView>

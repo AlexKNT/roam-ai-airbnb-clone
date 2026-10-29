@@ -4,13 +4,15 @@ import { Tabs } from 'expo-router/js-tabs';
 
 import { TabBar } from '@/components/tab-bar';
 import { tabItems } from '@/constants/copy';
+import { useOnboardingSeen } from '@/onboarding/use-onboarding-seen';
 import { color } from '@/theme';
 
 export default function TabsLayout() {
   const { isLoaded, isSignedIn } = useAuth();
+  const { seen } = useOnboardingSeen();
 
-  if (!isLoaded) return null;
-  if (!isSignedIn) return <Redirect href="/sign-in" />;
+  if (!isLoaded || seen === null) return null;
+  if (!isSignedIn) return <Redirect href={seen ? '/sign-in' : '/onboarding'} />;
 
   return (
     <Tabs

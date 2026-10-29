@@ -26,8 +26,8 @@ _These are recommendations to keep your build orderly, not requirements. Skip an
 | 7 | Grounded policy chat | Slice 3 · Chat | in-progress |
 | 8 | Saved stays | Slice 4 · Saving | in-progress |
 | 9 | Profile & account | Slice 5 · Account | in-progress |
-| 10 | Onboarding | Slice 6 · First run | planned |
-| 11 | Auth screens to the design | Slice 6 · First run | planned |
+| 10 | Onboarding | Slice 6 · First run | in-progress |
+| 11 | Auth screens to the design | Slice 6 · First run | in-progress |
 
 ## Existing base
 
@@ -148,12 +148,18 @@ The guest's own screen: identity, counts, account rows, preferences and sign out
 ### 10. Onboarding
 Three first run slides that explain the product, skippable, leading into sign up.
 **Done when:** the slides match the design, Skip and Get started reach auth, and returning guests never see them again.
-- [ ] Build it: `/develop onboarding`
+- [ ] Design it (spec): `/architect onboarding` · spec [0007](../specs/0007-onboarding.md) · assumed, owes ratification
+- [ ] Build it: `/develop onboarding` · code in `src/app/onboarding.tsx`, `src/onboarding/`, `src/app/(tabs)/_layout.tsx`
+  - [x] Slide screen to the design: photo hero, logo, Skip, place pill, curved sheet, dots, copy, Get started
+  - [x] Three slides with swipe paging and the progressbar state
+  - [x] First run gate: an unseen guest lands on onboarding, a seen guest goes to sign in
+- [ ] Verify it: `/check verify onboarding`
 
-### 11. Auth screens to the design
+### 11. Auth screens to the design · in-progress
 Restyle the existing Clerk screens to the design without changing the working flow.
 **Done when:** sign up and sign in match `auth.png` with name, email, password, Google and Apple, and the current Clerk sign in, sign up and verification still work.
-- [ ] Build it: `/develop auth screens to the design`
+- [x] Build it: `/develop auth screens to the design` · code in `src/app/sign-in.tsx`, `src/components/auth/`
+- [ ] Verify it: `/check verify auth screens to the design`
 
 ## Deferred
 Out of scope for this pass, kept so the plan stays honest.
