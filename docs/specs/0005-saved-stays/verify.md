@@ -75,3 +75,17 @@ Run on 2026-10-28 against the dev server on web. Every command step ran and pass
 - Trips row fields: compare each row with the same stay on Search → AC-4
 - failure copy: the forced failure dialog text comes from `savedStaysCopy` → AC-8
 - screen names: the PostHog events name the screen the heart was tapped on → AC-14
+
+## Run 2026-10-29 (`/check verify saved stays`, route + dataset run)
+
+Run against the dev server on web with a throwaway Clerk user, deleted at the end of the run. The private dataset is empty again.
+
+- [x] `GET`, `POST` and `DELETE /api/saved-stays` with no token, and `GET` with a bogus bearer token → 401 with an empty body, nothing written → AC-10
+- [x] Valid token and no body: `POST` → 422; `DELETE` without `stayId`, with a whitespace `stayId`, and with a 129 character `stayId` → 422 each → AC-10
+- [x] `POST {"stayId":"stay-brownstone-garden-flat"}` twice → both 200 with the same `savedAt` and `count: 1`; `GET` returns that id, `count: 1`, `hasMore: false` → AC-12
+- [x] A save for `stay-does-not-exist`, then `GET` → the id is absent, the count drops and the private document is gone → AC-11
+- [x] `DELETE` the real save → 200, count back to 0; the private dataset then holds no `savedStay` document → AC-6
+- [x] `production` reports `aclMode: public` and `saved-stays` reports `aclMode: private`; an anonymous query of the private dataset returns nothing and `production` holds zero `savedStay` documents → AC-13
+- [x] The served web bundle was fetched and searched for `SANITY_API_WRITE_TOKEN`, `SANITY_AUTH_TOKEN`, the private dataset name and the token prefixes: none present → AC-13
+- [x] With one save on the account, Profile's Saved count read `1`, matching `GET /api/saved-stays` → AC-7
+- [ ] Not run here: the 30 write and 60 read limiter per ten minutes, the second device and second guest steps, the heart and Trips row steps (Sanity is blocked in this browser), the PostHog events and the screen reader pass.

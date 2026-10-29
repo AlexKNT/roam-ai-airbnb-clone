@@ -27,3 +27,17 @@ _Steps derived from spec 0001 acceptance criteria. `/check verify` runs these; `
 ## Acceptance-criteria coverage
 
 - AC-1 covered by the token audit command and the placeholder contrast step · AC-2 covered by the web smoke, the Android export and the font failure step · AC-3 covered by the token audit command · AC-4 covered by the gallery step · AC-5 covered by the tab steps, the keyboard step, the iOS 26 step and the web smoke · AC-6 covered by the signed out and signed in steps · AC-7 covered by the dark appearance step · AC-8 covered by the VoiceOver step · AC-9 covered by the two command steps · AC-10 covered by the gallery step plus iOS simulator screenshots and an Android run, neither taken yet · AC-11 covered by the sign in step, the Google and Apple entry points are not in the app yet.
+
+## Run 2026-10-29 (`/check verify design system & app shell`, web + commands)
+
+Ran on Windows against `npx expo start --web` at 390x844; no iOS simulator or device on this machine.
+
+- [x] `npx tsc --noEmit` → exit 0 → AC-1, AC-3, AC-9
+- [x] `npx expo lint` → exit 0, no problems → AC-9
+- [ ] Token audit → **fails**: `src/components/auth/google-mark.tsx` holds four raw brand hex values (`#EA4335`, `#4285F4`, `#FBBC05`, `#34A853`), added by feature 11. Everything else in `src/components` and `src/app` reads tokens; `Logo` keeps its size prop → AC-1, AC-3
+- [x] App boots on web: Plus Jakarta Sans loads before first paint, onboarding and the four tabs render, the floating bar keeps its height, float and radius at phone width → AC-2, AC-5
+- [x] `textMuted` on `surfaceGray` measures 5.46:1, so placeholder text clears 4.5:1 → AC-1 (contrast)
+- [x] Bar labels and icons come from `tabItems` in `src/constants/copy.ts`, one edit changes the bar → AC-5 (value sourcing, read in code)
+- [x] Bars and screens read `useScreenBottomPadding`, so content clears the bar; the bar listens for the keyboard on iOS and Android → AC-5 (read in code, not exercised)
+- [x] Splash hides on a font failure and the text falls back to the system font → AC-2 (read in code, not exercised)
+- [ ] Not run here: dark appearance, VoiceOver, iOS 26 glass, the `/dev/components` pass and the AC-10 screenshots, because there is no simulator or device on this machine.

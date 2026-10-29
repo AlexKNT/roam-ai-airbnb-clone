@@ -82,3 +82,21 @@ Setup: `npx expo start`, sign in as a guest, open `brownstone-garden-flat` (a st
 - base URL on a device: set `EXPO_PUBLIC_API_ORIGIN` and ask one question from a phone → AC-5
 - Clerk user id: the rate window step, which only works when the session verifies → AC-5, AC-14
 - copy: every string on the screen comes from `policyChatCopy` → AC-2
+
+## Run 2026-10-29 (`/check verify grounded policy chat`, authenticated route run)
+
+Run against the dev server on web with a throwaway Clerk user created for this check and deleted at the end. No device on this machine, so the screen steps are not covered.
+
+- [x] `npx expo lint` → exit 0 → AC-19
+- [x] `npx tsc --noEmit` → exit 0 → AC-19
+- [x] `npx jest src/chat` → 4 suites, 27 tests pass, no network used → AC-18
+- [x] `POST /api/policy-chat` with no token, and with a bogus bearer token → 401, empty body → AC-5
+- [x] Valid session token, `staySlug: "no-such-stay"` → 404; empty `staySlug` → 422; a 301 character question → 422 → AC-5, AC-14
+- [x] "Can I cancel my booking?" → the Strict cancellation body word for word with the `Strict cancellation` source, `degraded: false`, so live Jev answered → AC-3, AC-4, AC-7
+- [x] "What are the house rules?" → one line per stored rule, nothing added → AC-4
+- [x] "What time is check in?" → the templated fact sentence with source `This stay` → AC-4
+- [x] "What identification do I need at check in?" → the Roam policy body word for word → AC-4, AC-17
+- [x] "Are pets allowed, and how much is a night?" → two answers, pets before price → AC-6
+- [x] "Why is the sky blue?" → `unanswered`, no answer text, no closest topic → AC-6
+- [x] A follow up carrying `recentTopicIds: ["cancellation-policy"]` answers cancellation again → AC-9
+- [ ] Not run here: the unavailable state (every seeded stay has a cancellation policy, so no stay triggers it), the 300 character and 25 turn caps, the 21 question rate limit, the unreachable TypeSafe degrade, the screen steps, PostHog and the screen reader pass.

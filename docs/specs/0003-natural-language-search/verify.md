@@ -39,3 +39,13 @@ _Steps derived from spec 0003 acceptance criteria. `/check verify` runs these; `
 ## Acceptance-criteria coverage
 
 - AC-1 by the design comparison and the chrome checks · AC-2 by the pet friendly cabin sentence · AC-3 by the injected parameter value · AC-4 by the embeddings status, the scored query and the sort charge check · AC-5 by the rating order check · AC-6 by the three sort changes · AC-7 by the chip order, removal and sentence check · AC-8 by the count line checks · AC-9 by the three unclear sentences · AC-10 by the empty state and Clear filters · AC-11 by the offline check · AC-12 by the tab switch and restart · AC-13 by typing without submitting and the repeat submit · AC-14 by the two Home entries · AC-15 by the filter icon · AC-16 by the embeddings off and offline checks · AC-17 by the PostHog event · AC-18 by the screen reader pass · AC-19 by the two commands.
+
+## Run 2026-10-29 (`/check verify natural language search`, commands + read path)
+
+- [x] `npx tsc --noEmit` → exit 0 → AC-19
+- [x] `npx expo lint` → exit 0 → AC-19
+- [x] The `production` dataset reports `embeddings.enabled: true` with the `{ name, summary }` projection, and a tokenless `score(text::semanticSimilarity($softText))` query returns `_score` on every row → AC-4, AC-16. Read from the management API rather than `npx sanity datasets embeddings status`, which is equivalent evidence.
+- [x] "cozy cabin with a hot tub" ranks Quiet Pine Cabin, Pine Hollow Cabin, then Timberline Lake Lodge, so mood text changes the order → AC-4
+- [x] Injected `$type` value `x" || defined(slug.current) || "` returns no stays and no error → AC-3
+- [ ] Not run here: the screen, chip, count, sort, unclear-sentence, empty and offline steps (the browser on this machine has every Sanity request blocked by CORS), the PostHog event and the screen reader pass.
+- Note: `src/search/` has no Jest coverage. Spec 0003 does not ask for it, and the parser is only exercised through the screen.
